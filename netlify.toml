@@ -1,3 +1,12 @@
 [build]
   command = "npm run check"
   publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# /api/lead sends quote-form leads to GoHighLevel. It needs the
+# GHL_PRIVATE_TOKEN and GHL_LOCATION_ID environment variables.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"

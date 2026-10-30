@@ -186,3 +186,87 @@ if (reviewsSection && reviewsTrack && reviewCards.length) {
   });
   updateReviews();
 }
+
+// Lead forms post to /api/lead (netlify/functions/lead.mjs), which sends the lead to GoHighLevel.
+// netlify/lib/lead.mjs refuses anything sent sooner than this after the page loads.
+const LEAD_MIN_FILL_MS = 3000;
+const LEAD_CALL_US = 'We couldn’t confirm your request. Please call (818) 884-5464 before sending it again.';
+document.querySelectorAll('form[data-lead-form]').forEach(form => {
+  const status = form.querySelector('.lead-form-status');
+  const button = form.querySelector('button[type="submit"]');
+  const buttonLabel = button.textContent;
+  const fields = [...form.querySelectorAll('input:not([type="radio"]):not([name="website"]), select, textarea')];
+  let pending = false;
+
+  function problem(field) {
+    const value = field.value.trim();
+    if (!value) return field.required ? 'Please complete the ' + field.labels[0].textContent.toLowerCase() + ' field.' : '';
+    if (field.type === 'email' && !field.validity.valid) return 'Please enter a valid email address.';
+    if (field.type === 'tel') {
+      const digits = value.replace(/\D/g, '');
+      if (!(digits.length === 10 || (digits.length === 11 && digits.startsWith('1')))) return 'Please enter a 10-digit US phone number.';
+    }
+    if (field.name === 'postal-code' && !/^\d{5}$/.test(value)) return 'Please enter a 5-digit ZIP code.';
+    return '';
+  }
+
+  function show(message, isError) {
+    status.textContent = message;
+    status.classList.toggle('is-error', isError);
+    status.focus();
+  }
+
+  fields.forEach(field => field.addEventListener('input', () => {
+    if (field.getAttribute('aria-invalid') === 'true' && !problem(field)) field.setAttribute('aria-invalid', 'false');
+  }));
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (pending) return;
+    const invalid = fields.filter(field => {
+      const error = problem(field);
+      field.setAttribute('aria-invalid', String(!!error));
+      return error;
+    });
+    if (invalid.length) {
+      show(problem(invalid[0]), true);
+      invalid[0].focus();
+      return;
+    }
+    pending = true;
+    button.disabled = true;
+    button.textContent = 'Sending…';
+    form.setAttribute('aria-busy', 'true');
+    status.textContent = '';
+    try {
+      // Someone whose browser autofills the form can be faster than the minimum;
+      // wait it out rather than have the lead rejected.
+      const wait = LEAD_MIN_FILL_MS + 100 - performance.now();
+      if (wait > 0) await new Promise(resolve => setTimeout(resolve, wait));
+      const payload = Object.fromEntries(new FormData(form));
+      payload.form = form.dataset.leadForm;
+      payload.page = location.pathname;
+      // Time since the page started loading, on this browser's own clock.
+      payload.elapsedMs = Math.round(performance.now());
+      const response = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        // AbortSignal.timeout is missing before Safari 16; send without a timeout there rather than fail.
+        signal: AbortSignal.timeout?.(20000),
+      });
+      const result = await response.json();
+      if (!response.ok || result.success !== true) throw new Error(result.error || LEAD_CALL_US);
+      form.reset();
+      form.classList.add('is-sent');
+      show('Thank you. We received your request and will contact you soon.', false);
+    } catch (error) {
+      show(error.name === 'TimeoutError' || error instanceof TypeError || error instanceof SyntaxError ? LEAD_CALL_US : error.message, true);
+    } finally {
+      pending = false;
+      button.disabled = false;
+      button.textContent = buttonLabel;
+      form.removeAttribute('aria-busy');
+    }
+  });
+});

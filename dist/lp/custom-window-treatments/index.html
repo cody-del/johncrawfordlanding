@@ -175,19 +175,20 @@
       </figure></div></div></section>
 <section class="section linen landing-quote" aria-labelledby="company-summary-heading"><div class="container landing-quote-grid">
       <div class="landing-company-summary"><p class="landing-company-eyebrow">John Crawford Company</p><h2 id="company-summary-heading">Work with John Crawford.</h2><p>John helps you choose blinds, shades, shutters or drapery for your home, with motorization available.</p><p>From installation to questions down the road, you have a local team to turn to.</p><a class="btn btn-showroom-contact" href="tel:+18188845464">Call Us</a></div>
-      <form class="landing-form" id="contact" aria-labelledby="quote-heading" aria-describedby="form-preview form-required">
+      <form class="landing-form" id="contact" data-lead-form="quote" aria-labelledby="quote-heading" aria-describedby="form-required" novalidate>
       <h2 id="quote-heading">Get your free quote</h2>
       <p class="landing-follow-up">We’ll follow up about your quote or appointment request.</p>
-      <p class="landing-preview-note" id="form-preview">Form preview. Please call us until online quotes are available.</p>
       <div class="landing-form-fields">
-      <div class="landing-form-field"><label for="lead-name">Full name</label><input id="lead-name" name="name" autocomplete="name" type="text" maxlength="120" required disabled></div>
-      <div class="landing-form-field"><label for="lead-phone">Phone number</label><input id="lead-phone" name="phone" autocomplete="tel" type="tel" maxlength="30" required disabled></div>
-      <div class="landing-form-field"><label for="lead-email">Email</label><input id="lead-email" name="email" autocomplete="email" type="email" maxlength="254" required disabled></div>
+      <div class="landing-form-field"><label for="lead-name">Full name</label><input id="lead-name" name="name" autocomplete="name" type="text" maxlength="120" required></div>
+      <div class="landing-form-field"><label for="lead-phone">Phone number</label><input id="lead-phone" name="phone" autocomplete="tel" type="tel" maxlength="30" required></div>
+      <div class="landing-form-field"><label for="lead-email">Email</label><input id="lead-email" name="email" autocomplete="email" type="email" maxlength="254" required></div>
       </div><p class="landing-required" id="form-required">Contact fields are required.</p>
       <fieldset class="landing-appointment-options"><legend>I’d like to schedule<span class="sr-only"> (optional)</span></legend>
-      <label for="lead-home-consultation"><input id="lead-home-consultation" name="appointment-type" value="in-home" type="radio" disabled><span>Free in-home consultation</span></label>
-      <label for="lead-showroom"><input id="lead-showroom" name="appointment-type" value="showroom" type="radio" disabled><span>Showroom appointment</span></label></fieldset>
-      <button class="btn btn-primary" type="button" disabled>Get Free Quote</button>
+      <label for="lead-home-consultation"><input id="lead-home-consultation" name="appointment-type" value="in-home" type="radio"><span>Free in-home consultation</span></label>
+      <label for="lead-showroom"><input id="lead-showroom" name="appointment-type" value="showroom" type="radio"><span>Showroom appointment</span></label></fieldset>
+      <div class="lead-form-trap" aria-hidden="true"><label>Leave this field empty <input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn btn-primary" type="submit">Get Free Quote</button>
+      <p class="lead-form-status" role="status" tabindex="-1"></p>
       <p class="landing-privacy">Your details are used to respond to your inquiry. <button class="landing-info-button" type="button" data-landing-dialog="landing-privacy-dialog" aria-haspopup="dialog" aria-controls="landing-privacy-dialog">Privacy Policy</button>.</p></form></div></section>
 </main>
 <footer class="site-footer" id="footer">
@@ -204,7 +205,7 @@
   </div>
 <dialog class="landing-info-dialog" id="landing-privacy-dialog" aria-labelledby="landing-privacy-heading">
       <div class="landing-dialog-heading"><h2 id="landing-privacy-heading">Privacy Policy</h2><form method="dialog"><button class="landing-info-button" type="submit" autofocus>Close</button></form></div>
-      <p>The quote form on this review page does not accept submissions. If you call us, we use the information you provide to respond and discuss your project.</p>
+      <p>When you request a quote, we receive the name, phone number and email you enter and the appointment type you choose. We keep them in HighLevel, the customer relationship system we use to manage inquiries, and use them to respond and discuss your project. If you call us, we use the information you provide the same way.</p>
       <p>These pages are hosted through Netlify and ChatGPT Sites. Hosting providers may process technical information, such as IP addresses, browser details and request logs, to deliver and secure the pages. Advertising pixels and audience-tracking analytics have not been installed on these pages.</p>
       <p>For questions about information you provide, call John Crawford Company at <a href="tel:+18188845464">(818) 884-5464</a>.</p></dialog>
       <dialog class="landing-info-dialog" id="landing-accessibility-dialog" aria-labelledby="landing-accessibility-heading">
