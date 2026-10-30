@@ -418,3 +418,13 @@ address { font-style: normal; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; }
 }
+
+/* Lead forms (app.js): the hidden bot trap, the status line, and the sent state. */
+.lead-form-trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.lead-form-status { margin: 14px 0 0; color: var(--walnut); font-size: 15px; font-weight: 600; line-height: 1.5; }
+.lead-form-status:empty { display: none; }
+.lead-form-status.is-error { color: #9b1c1c; }
+.lead-form-status:focus { outline: none; }
+form.is-sent > :not(h2):not(.lead-form-status) { display: none !important; }
+form.is-sent .lead-form-status { margin-top: 8px; }
+[aria-invalid="true"] { border-color: #9b1c1c !important; }

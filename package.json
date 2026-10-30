@@ -4,6 +4,6 @@
   "private": true,
   "scripts": {
     "preview": "python3 -m http.server 4318 --bind 127.0.0.1 --directory dist",
-    "check": "node --check dist/app.js && python3 scripts/check-landings.py && python3 scripts/check-customer-copy.py --html dist --min-html-files 2"
+    "check": "node --check dist/app.js && python3 scripts/check-landings.py && python3 scripts/check-customer-copy.py --html dist --min-html-files 2 && node --test tests/lead.test.mjs"
   }
 }

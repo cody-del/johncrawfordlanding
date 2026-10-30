@@ -37,7 +37,11 @@ There is no dependency on the full website's homepage or page generators. Edit t
 
 ## Current integration status
 
-Quote forms remain disabled design previews pending GoHighLevel integration and verified lead delivery. Phone links are active. No advertising pixels or conversion tracking were added by this export. Pages retain `noindex, nofollow` and the existing review-domain canonical/social metadata; configure the intended production domain when launching.
+Quote forms send leads to John Crawford Company's GoHighLevel location through `/api/lead` (`netlify/functions/lead.mjs`). The function upserts the contact with the tag `google_landing_page`, a source naming the page (for example `Google Ads Landing Page: Motorized Shades`) and, when the visitor picks one, `in-home-consultation` or `showroom-appointment`; the appointment choice is also written as a note. It refuses the hidden `website` field, submissions sent within 3 seconds of page load and more than 5 per visitor per 15 minutes. What the form sends is set in `netlify/lib/site.mjs`; `netlify/lib/lead.mjs` is identical in `cody-del/johncrawfordcompany`.
+
+The Netlify site needs two environment variables: `GHL_PRIVATE_TOKEN` (a private integration token made inside John Crawford's sub-account, with contact and note write access) and `GHL_LOCATION_ID`. John Crawford's GHL lead workflow should trigger on the `google_landing_page` tag. `npm run check` also runs `tests/lead.test.mjs`.
+
+Phone links are active. No advertising pixels or conversion tracking were added by this export. Pages retain `noindex, nofollow` and the existing review-domain canonical/social metadata; configure the intended production domain when launching.
 
 ## Export source
 
