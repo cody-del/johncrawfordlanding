@@ -7,7 +7,7 @@ Standalone static export of the two approved campaign landing pages, including t
 - `/lp/custom-window-treatments/`
 - `/lp/motorized-shades/`
 
-The pages retain the approved design, video heroes, reviews, product cards, benefits, appointment-only Woodland Hills section, and quote forms. Visitors can request a quote on the same page or call. Privacy and accessibility information open in dialogs.
+The pages retain the approved design, video heroes, reviews, product cards, benefits, appointment-only Woodland Hills section, and quote forms. Visitors can request a quote on the same page or call. The footer links to Accessibility (`/accessibility/`), Privacy Policy (`/privacy/`) and Terms of Service (`/terms/`) pages on the same domain; the quote form's privacy notice still opens a short summary dialog that links to the full policy. Run `python3 scripts/build-legal-pages.py` after changing the policy text.
 
 ## Local preview
 

@@ -5,7 +5,11 @@ from urllib.parse import unquote, urlsplit
 import re
 
 ROOT = Path(__file__).resolve().parents[1] / 'dist'
-PAGES = {Path('lp/custom-window-treatments/index.html'), Path('lp/motorized-shades/index.html')}
+LANDINGS = {Path('lp/custom-window-treatments/index.html'), Path('lp/motorized-shades/index.html')}
+LEGAL = {Path('privacy/index.html'), Path('terms/index.html'), Path('accessibility/index.html')}
+PAGES = LANDINGS | LEGAL
+POLICY_LINKS = {'/accessibility/', '/privacy/', '/terms/'}
+LEGAL_LINKS = POLICY_LINKS | {'/', '/lp/custom-window-treatments/#contact', 'mailto:john@johncrawford.com'}
 
 
 class Page(HTMLParser):
@@ -33,7 +37,7 @@ class Page(HTMLParser):
             self.refs.extend(item.strip().split()[0] for item in attrs['srcset'].split(','))
 
 
-assert {p.relative_to(ROOT) for p in ROOT.rglob('*.html')} == PAGES, 'Expected only the two landing pages'
+assert {p.relative_to(ROOT) for p in ROOT.rglob('*.html')} == PAGES, 'Expected the two landing pages and three policy pages'
 pending = list(PAGES)
 checked = set()
 while pending:
@@ -49,11 +53,21 @@ while pending:
         page = Page()
         page.feed(path.read_text())
         assert page.headings == 1, f'{relative}: expected one H1'
-        assert 'contact' in page.ids, f'{relative}: missing quote form'
+        text = path.read_text()
+        assert 'name="robots" content="noindex, nofollow"' in text, f'{relative}: must stay out of search results'
+        assert POLICY_LINKS <= set(page.links), f'{relative}: footer must link Accessibility, Privacy Policy and Terms of Service'
+        allowed = POLICY_LINKS if relative in LANDINGS else LEGAL_LINKS
+        if relative in LANDINGS:
+            assert 'contact' in page.ids, f'{relative}: missing quote form'
+        else:
+            assert '<script' not in text, f'{relative}: policy pages load no scripts'
         for href in page.links:
-            assert href.startswith('#') or href == 'tel:+18188845464', f'{relative}: unexpected outbound link: {href}'
+            assert href.startswith('#') or href == 'tel:+18188845464' or href in allowed, f'{relative}: unexpected outbound link: {href}'
             if href.startswith('#'):
                 assert unquote(href[1:]) in page.ids, f'{relative}: missing anchor: {href}'
+            elif href.startswith('/'):
+                target = Path(urlsplit(href).path.strip('/')) / 'index.html' if href != '/' else None
+                assert target is None or target in PAGES, f'{relative}: link to a missing page: {href}'
         refs = page.refs
     elif path.suffix == '.css':
         refs = re.findall(r'url\([\s\x22\x27]*([^\)\x22\x27]+)', path.read_text())
@@ -64,4 +78,4 @@ while pending:
         asset = Path(unquote(url.path).lstrip('/')) if url.path.startswith('/') else relative.parent / unquote(url.path)
         pending.append(asset)
 
-print(f'Both landing pages passed; {len(checked)} page and dependency files verified.')
+print(f'Landing and policy pages passed; {len(checked)} page and dependency files verified.')
