@@ -50,24 +50,30 @@ while pending:
     checked.add(path)
     refs = []
     if path.suffix == '.html':
-        page = Page()
-        page.feed(path.read_text())
-        assert page.headings == 1, f'{relative}: expected one H1'
         text = path.read_text()
+        page = Page()
+        page.feed(text)
+        assert page.headings == 1, f'{relative}: expected one H1'
         assert 'name="robots" content="noindex, nofollow"' in text, f'{relative}: must stay out of search results'
         assert POLICY_LINKS <= set(page.links), f'{relative}: footer must link Accessibility, Privacy Policy and Terms of Service'
         allowed = POLICY_LINKS if relative in LANDINGS else LEGAL_LINKS
         if relative in LANDINGS:
             assert 'contact' in page.ids, f'{relative}: missing quote form'
         else:
-            assert '<script' not in text, f'{relative}: policy pages load no scripts'
+            scripts = re.findall(r'<script\b[^>]*>', text)
+            assert scripts == ['<script src="/legal.js?v=legal-1" defer>'], f'{relative}: policy pages load only legal.js'
         for href in page.links:
             assert href.startswith('#') or href == 'tel:+18188845464' or href in allowed, f'{relative}: unexpected outbound link: {href}'
             if href.startswith('#'):
                 assert unquote(href[1:]) in page.ids, f'{relative}: missing anchor: {href}'
             elif href.startswith('/'):
-                target = Path(urlsplit(href).path.strip('/')) / 'index.html' if href != '/' else None
+                url = urlsplit(href)
+                target = Path(url.path.strip('/')) / 'index.html' if url.path != '/' else None
                 assert target is None or target in PAGES, f'{relative}: link to a missing page: {href}'
+                if target and url.fragment:
+                    other = Page()
+                    other.feed((ROOT / target).read_text())
+                    assert unquote(url.fragment) in other.ids, f'{relative}: {href} points to a missing anchor'
         refs = page.refs
     elif path.suffix == '.css':
         refs = re.findall(r'url\([\s\x22\x27]*([^\)\x22\x27]+)', path.read_text())
