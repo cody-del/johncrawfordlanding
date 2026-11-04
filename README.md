@@ -45,6 +45,8 @@ Phone links are active. No advertising pixels or conversion tracking were added 
 
 ## Export source
 
-Copied without page or asset changes from `cody-del/johncrawfordcompany`, commit `b899eb9` (landing-page copy alignment). The later website-only commits were checked and do not change these landing pages or their assets.
+The hero videos and posters now match the main website's corrected `20261104-color2` edit, including the coastal ocean detail. Keep the desktop and mobile exports synchronized with that approved edit.
+
+Originally exported from `cody-del/johncrawfordcompany`, commit `b899eb9` (landing-page copy alignment). Later landing-page updates are maintained in this standalone repository.
 
 This repository contains the two landing pages and their public runtime dependencies. It excludes the main website pages, campaign drafts, client intake records, CRM configuration, credentials, and local review artifacts.
