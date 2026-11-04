@@ -1,0 +1,15 @@
+/* Privacy Policy, Terms of Service and Accessibility pages on the landing domain. */
+.legal-page { padding-block: 64px 88px; }
+.legal-readable { max-width: 760px; }
+.legal-readable h1 { font-size: clamp(40px, 4vw, 56px); }
+.legal-readable h2 { margin-top: 40px; font-size: clamp(26px, 2.2vw, 32px); }
+.legal-readable p { margin-top: 16px; }
+.legal-readable .legal-date { color: #7a5a44; font-size: 15px; }
+.legal-readable a { color: var(--magenta); text-decoration: underline; text-underline-offset: 4px; }
+.legal-readable a:hover { color: var(--walnut); }
+.landing-legal .brand { display: block; }
+.landing-legal .footer-bottom { margin-top: 0; }
+.site-footer nav a[aria-current="page"] { color: var(--magenta); }
+@media (max-width: 700px) {
+  .legal-page { padding-block: 44px 72px; }
+}
