@@ -31,7 +31,7 @@ PAGES = [
   <h2>Service providers</h2>
   <p>Quote requests are kept in HighLevel, the customer relationship system we use to manage inquiries. These pages are hosted through Netlify and ChatGPT Sites. Hosting providers may process technical information, such as IP addresses, browser details and request logs, to deliver and secure the pages. Our forms use Cloudflare Turnstile to confirm that a person, not an automated program, is sending them; Cloudflare receives browser and device information for that check.</p>
   <h2>Tracking</h2>
-  <p>Advertising pixels and audience-tracking analytics have not been installed on these pages. The pages do not change their behavior in response to browser Do Not Track signals.</p>
+  <p>Advertising pixels and audience-tracking analytics have not been installed on these pages. A cookie notice from CookieScript lets you review and change your cookie choices; it saves your choice in a cookie on your device. The pages do not change their behavior in response to browser Do Not Track signals.</p>
   <h2>Your privacy requests</h2>
   <p>To ask about access, correction or deletion of information you provided to us, call {PHONE} or email {EMAIL}. We may need to verify your request and retain records required for an ongoing project or by law.</p>
   <h2>Policy updates</h2>
@@ -86,6 +86,7 @@ def render(page):
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script type="text/javascript" charset="UTF-8" src="https://cdn.cookie-script.com/s/bb49fbb8483ced09e550fab9f04307c1.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{escape(title)}</title>
   <meta name="description" content="{escape(page['description'])}">

@@ -61,7 +61,9 @@ while pending:
             assert 'contact' in page.ids, f'{relative}: missing quote form'
         else:
             scripts = re.findall(r'<script\b[^>]*>', text)
-            assert scripts == ['<script src="/legal.js?v=legal-1" defer>'], f'{relative}: policy pages load only legal.js'
+            # The CookieScript banner (every page) and legal.js are the only scripts on the policy pages.
+            cookiescript = '<script type="text/javascript" charset="UTF-8" src="https://cdn.cookie-script.com/s/bb49fbb8483ced09e550fab9f04307c1.js">'
+            assert scripts == [cookiescript, '<script src="/legal.js?v=legal-1" defer>'], f'{relative}: policy pages load only the cookie banner and legal.js'
         for href in page.links:
             assert href.startswith('#') or href == 'tel:+18188845464' or href in allowed, f'{relative}: unexpected outbound link: {href}'
             if href.startswith('#'):
