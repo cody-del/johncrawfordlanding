@@ -32,20 +32,20 @@ test('a landing lead is upserted with the landing tag, its page source and the a
   assert.deepEqual(calls[0].body, {
     locationId: 'loc-test', firstName: 'Ada', lastName: 'Lovelace King', phone: '+18185550142',
     email: 'ada@example.com', source: 'Google Ads Landing Page: Motorized Shades',
-    tags: ['google_landing_page', 'in-home-consultation'],
+    tags: ['google_landing_page', 'google_motorized shades', 'in-home-consultation'],
     customFields: [{id: 'INk19lHx5XU2HQQhdFNQ', field_value: expectedSubmission}],
   });
   assert.equal(calls[1].url, `${GHL_API}/contacts/c-1/notes`);
   assert.equal(calls[1].body.body, expectedSubmission);
 });
 
-test('without an appointment choice there is no extra tag but the notification note is still saved', async () => {
+test('without an appointment choice the page tag and notification note are still saved', async () => {
   const {calls, fetcher} = ghl();
   const result = await submitLead(lead({'appointment-type': undefined, page: '/'}), {fetcher, env});
   assert.equal(result.status, 200);
   assert.equal(calls.length, 2);
   assert.match(calls[1].body.body, /^John Crawford form submission: Google Ads lead/);
-  assert.deepEqual(calls[0].body.tags, ['google_landing_page']);
+  assert.deepEqual(calls[0].body.tags, ['google_landing_page', 'google_window treatments']);
   assert.equal(calls[0].body.source, 'Google Ads Landing Page: Custom Window Treatments');
 });
 
@@ -53,6 +53,7 @@ test('an unknown page falls back to the form source', async () => {
   const {calls, fetcher} = ghl();
   await submitLead(lead({page: '/somewhere/else/'}), {fetcher, env});
   assert.equal(calls[0].body.source, 'Google Ads Landing Page');
+  assert.deepEqual(calls[0].body.tags, ['google_landing_page', 'in-home-consultation']);
 });
 
 test('bots, fast fills, bad fields and unknown forms never reach GHL', async () => {
@@ -132,5 +133,22 @@ test('both landing forms are live and post to the quote form', () => {
     assert.doesNotMatch(form, /\bdisabled\b|Form preview/);
     for (const name of ['name', 'phone', 'email']) assert.match(form, new RegExp(`name="${name}"[^>]*required`));
     assert.doesNotMatch(html, /does not accept submissions/);
+  }
+});
+
+
+test('each landing route sends only its campaign tag and preserves appointment tags', async () => {
+  for (const [page, expectedTag] of [
+    ['/', 'google_window treatments'],
+    ['/motorized-shades/', 'google_motorized shades'],
+    ['/lp/custom-window-treatments/', 'google_window treatments'],
+    ['/lp/motorized-shades/', 'google_motorized shades'],
+  ]) {
+    for (const [choice, appointmentTag] of [['in-home', 'in-home-consultation'], ['showroom', 'showroom-appointment'], [undefined, undefined]]) {
+      const {calls, fetcher} = ghl();
+      const result = await submitLead(lead({page, 'appointment-type': choice, tags: ['untrusted-tag']}), {fetcher, env});
+      assert.equal(result.status, 200);
+      assert.deepEqual(calls[0].body.tags, ['google_landing_page', expectedTag, ...(appointmentTag ? [appointmentTag] : [])]);
+    }
   }
 });

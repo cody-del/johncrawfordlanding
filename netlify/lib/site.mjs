@@ -7,6 +7,14 @@ export const PHONE = '(818) 884-5464';
 // GHL trigger in the same sitting.
 export const LEAD_TAG = 'google_landing_page';
 
+// Keep the workflow tag above and add the requested campaign tag per page.
+export const PAGE_LEAD_TAGS = {
+  '/': 'google_window treatments',
+  '/motorized-shades/': 'google_motorized shades',
+  '/lp/custom-window-treatments/': 'google_window treatments',
+  '/lp/motorized-shades/': 'google_motorized shades',
+};
+
 // Each form names its fields. A field with `tags` adds the tag for its value,
 // one with `contactField` sets that contact field, and every answer is also
 // written in the contact's note.

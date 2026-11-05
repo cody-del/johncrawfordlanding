@@ -2,10 +2,9 @@
 // is upserted, then anything the visitor wrote beyond their contact details is
 // added as a note. The way Beautiful Blinds & Shades' landing page sends its own
 // (cody-del/beautifullanding, netlify/lib/consultation.mjs). The token and
-// location come from this site's Netlify environment variables. This file is
-// identical in johncrawfordcompany and johncrawfordlanding; what differs between
-// the two sites lives in site.mjs.
-import {FORMS, LEAD_TAG, PHONE} from './site.mjs';
+// location come from this site's Netlify environment variables. Landing-page
+// campaign tags and form configuration live in site.mjs.
+import {FORMS, LEAD_TAG, PAGE_LEAD_TAGS, PHONE} from './site.mjs';
 
 export const GHL_API = 'https://services.leadconnectorhq.com';
 const GHL_VERSION = '2021-07-28';
@@ -72,6 +71,9 @@ export async function submitLead(data, {fetcher = fetch, rateLimited = () => fal
     source,
     tags: [LEAD_TAG],
   };
+  if (typeof data.page === 'string' && Object.hasOwn(PAGE_LEAD_TAGS, data.page)) {
+    contact.tags.push(PAGE_LEAD_TAGS[data.page]);
+  }
   const note = [];
   for (const {field, value} of answers) {
     if (field.contactField) contact[field.contactField] = value;
