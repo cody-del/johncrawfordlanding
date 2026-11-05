@@ -4,6 +4,10 @@ import {readFileSync} from 'node:fs';
 import {submitLead, GHL_API, MIN_FILL_MS} from '../netlify/lib/lead.mjs';
 import {createLeadHandler, createRateLimiter} from '../netlify/lib/lead-http.mjs';
 
+// These tests post without a Turnstile token; keep a build's real TURNSTILE_SECRET_KEY
+// (Netlify sets it for production builds) from switching the human check on here.
+delete process.env.TURNSTILE_SECRET_KEY;
+
 const expectedSubmission = "John Crawford form submission: Google Ads lead\nSource: Google Ads Landing Page: Motorized Shades\nName: Ada  Lovelace King\nPhone: +18185550142\nEmail: ada@example.com\nI’d like to schedule: Free in-home consultation";
 const env = {GHL_PRIVATE_TOKEN: 'pit-test', GHL_LOCATION_ID: 'loc-test'};
 const lead = (extra = {}) => ({
