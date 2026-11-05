@@ -23,3 +23,31 @@ test('every page loads the CookieScript banner once, first in <head>', () => {
     assert.ok(head.indexOf(TAG) < head.indexOf('<script', head.indexOf('<meta charset')) + 1, `${file}: CookieScript must be the first script`);
   }
 });
+
+// The Meta Pixel only runs through CookieScript, after the visitor allows Targeting cookies.
+const PIXEL_OPEN = '<script type="text/plain" data-cookiescript="accepted" data-cookiecategory="targeting">';
+const wantsPixel = file => ['index.html', 'motorized-shades/index.html'].some(page => file.endsWith('/dist/' + page));
+
+test('the Meta Pixel is consent-gated, after CookieScript, and has no noscript fallback', () => {
+  let withPixel = 0;
+  for (const file of pages(dist)) {
+    const html = readFileSync(file, 'utf8');
+    const inits = html.split("fbq('init','4317054311941000')").length - 1;
+    assert.doesNotMatch(html, /facebook\.com\/tr\?/, `${file}: the noscript image would track without consent`);
+    assert.doesNotMatch(html, /<script>[^<]*fbevents\.js/, `${file}: the pixel must not run outside CookieScript`);
+    if (!wantsPixel(file)) { assert.equal(inits, 0, `${file}: no pixel expected`); continue; }
+    assert.equal(inits, 1, `${file}: pixel must appear exactly once`);
+    const pixel = html.indexOf(PIXEL_OPEN);
+    assert.ok(pixel > html.indexOf(TAG) && pixel < html.indexOf('</head>'), `${file}: pixel must be gated and come after CookieScript in <head>`);
+    withPixel++;
+  }
+  assert.ok(withPixel > 0);
+});
+
+test('the Lead event fires only after a confirmed lead, without contact details', () => {
+  const app = readFileSync(new URL('../dist/app.js', import.meta.url), 'utf8');
+  const calls = app.match(/fbq\('track', 'Lead'[^)]*\)/g) || [];
+  assert.deepEqual(calls, ["fbq('track', 'Lead')"]);
+  assert.ok(app.indexOf("fbq('track', 'Lead')") > app.indexOf("Thank you. We received your request"), 'Lead must follow the confirmed thank-you');
+});
+

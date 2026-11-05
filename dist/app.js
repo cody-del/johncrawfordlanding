@@ -307,6 +307,9 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
       form.reset();
       form.classList.add('is-sent');
       show(result.warning || 'Thank you. We received your request and will contact you soon.', false);
+      // Meta Pixel lead, only for a lead GHL confirmed and only if the visitor allowed Targeting cookies
+      // (otherwise CookieScript never loaded the pixel and fbq doesn't exist). No contact details are sent.
+      try { if (typeof fbq === 'function') fbq('track', 'Lead'); } catch {}
     } catch (error) {
       show(error.name === 'TimeoutError' || error instanceof TypeError || error instanceof SyntaxError ? LEAD_CALL_US : error.message, true);
     } finally {
