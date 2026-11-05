@@ -22,14 +22,14 @@ PAGES = [
         'description': 'How John Crawford Company handles quote requests and contact information sent through these pages.',
         'body': f'''
   <h1>Privacy Policy</h1>
-  <p class="legal-date">Effective November 5, 2026.</p>
+  <p class="legal-date">Effective November 6, 2026.</p>
   <p>This policy describes the information John Crawford Company collects through these pages and how to contact us about it.</p>
   <h2>Information you provide</h2>
   <p>When you request a quote, we receive the name, phone number and email you enter and the appointment type you choose. If you call or email us, we receive the contact information and project details you share.</p>
   <h2>How your information is used</h2>
   <p>We use your information to respond to your request, discuss your project and arrange a showroom appointment or in-home consultation.</p>
   <h2>Service providers</h2>
-  <p>Quote requests are kept in HighLevel, the customer relationship system we use to manage inquiries. These pages are hosted through Netlify and ChatGPT Sites. Hosting providers may process technical information, such as IP addresses, browser details and request logs, to deliver and secure the pages.</p>
+  <p>Quote requests are kept in HighLevel, the customer relationship system we use to manage inquiries. These pages are hosted through Netlify and ChatGPT Sites. Hosting providers may process technical information, such as IP addresses, browser details and request logs, to deliver and secure the pages. Our forms use Cloudflare Turnstile to confirm that a person, not an automated program, is sending them; Cloudflare receives browser and device information for that check.</p>
   <h2>Tracking</h2>
   <p>Advertising pixels and audience-tracking analytics have not been installed on these pages. The pages do not change their behavior in response to browser Do Not Track signals.</p>
   <h2>Your privacy requests</h2>

@@ -187,6 +187,50 @@ if (reviewsSection && reviewsTrack && reviewCards.length) {
   updateReviews();
 }
 
+// Cloudflare Turnstile: an invisible human check on every lead form; netlify/lib/turnstile.mjs
+// checks its token. One widget serves both John Crawford sites. Other hosts, such as Netlify
+// previews, get Cloudflare's always-pass test key. The widget is "John Crawford lead forms" in the
+// gbp@shadestrategy.com Cloudflare account; the server only checks once TURNSTILE_SECRET_KEY is set.
+const TURNSTILE_LIVE_HOSTS = ['www.johncrawfordcompany.com', 'johncrawfordcompany.com', 'go.johncrawfordcompany.com'];
+const TURNSTILE_SITE_KEY = TURNSTILE_LIVE_HOSTS.includes(location.hostname) ? '0x4AAAAAAF1MJ5a53NsFXu0h' : '1x00000000000000000000AA';
+let turnstileLoaded;
+function humanCheck(form) {
+  if (!TURNSTILE_SITE_KEY) return { token: async () => '', reset() {} };
+  turnstileLoaded ??= new Promise((resolve, reject) => {
+    window.onTurnstileLoad = resolve;
+    document.head.append(Object.assign(document.createElement('script'), {
+      src: 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad', async: true, onerror: reject,
+    }));
+  });
+  const container = Object.assign(document.createElement('div'), { className: 'lead-form-turnstile' });
+  form.querySelector('button[type="submit"]').before(container);
+  let widget;
+  let failed = false;
+  let needsTick = false;
+  turnstileLoaded.then(() => {
+    widget = turnstile.render(container, {
+      sitekey: TURNSTILE_SITE_KEY, action: form.dataset.leadForm, size: 'flexible', appearance: 'interaction-only',
+      'before-interactive-callback': () => { needsTick = true; },
+      'error-callback': () => { failed = true; },
+    });
+  }, () => { failed = true; });
+  return {
+    // The token; '' when the check couldn't run (the server then decides); null while the
+    // visitor still has to tick the box.
+    async token() {
+      for (let waited = 0; waited < 8000; waited += 200) {
+        if (failed) return '';
+        const token = widget !== undefined && turnstile.getResponse(widget);
+        if (token) return token;
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+      return needsTick ? null : '';
+    },
+    // Tokens work once, so a failed send needs a fresh one.
+    reset() { if (widget !== undefined) turnstile.reset(widget); },
+  };
+}
+
 // Lead forms post to /api/lead (netlify/functions/lead.mjs), which sends the lead to GoHighLevel.
 // netlify/lib/lead.mjs refuses anything sent sooner than this after the page loads.
 const LEAD_MIN_FILL_MS = 3000;
@@ -197,6 +241,7 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
   const buttonLabel = button.textContent;
   const fields = [...form.querySelectorAll('input:not([type="radio"]):not([name="website"]), select, textarea')];
   let pending = false;
+  const human = humanCheck(form);
 
   function problem(field) {
     const value = field.value.trim();
@@ -242,12 +287,14 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
       // Someone whose browser autofills the form can be faster than the minimum;
       // wait it out rather than have the lead rejected.
       const wait = LEAD_MIN_FILL_MS + 100 - performance.now();
-      if (wait > 0) await new Promise(resolve => setTimeout(resolve, wait));
+      const [token] = await Promise.all([human.token(), wait > 0 && new Promise(resolve => setTimeout(resolve, wait))]);
+      if (token === null) throw new Error('Please tick the box to confirm you’re a person, then send again.');
       const payload = Object.fromEntries(new FormData(form));
       payload.form = form.dataset.leadForm;
       payload.page = location.pathname;
       // Time since the page started loading, on this browser's own clock.
       payload.elapsedMs = Math.round(performance.now());
+      payload['cf-turnstile-response'] = token;
       const response = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -263,6 +310,7 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
     } catch (error) {
       show(error.name === 'TimeoutError' || error instanceof TypeError || error instanceof SyntaxError ? LEAD_CALL_US : error.message, true);
     } finally {
+      if (!form.classList.contains('is-sent')) human.reset();
       pending = false;
       button.disabled = false;
       button.textContent = buttonLabel;
