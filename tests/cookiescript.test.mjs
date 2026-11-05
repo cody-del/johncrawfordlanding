@@ -37,6 +37,7 @@ test('the Meta Pixel is consent-gated, after CookieScript, and has no noscript f
     assert.doesNotMatch(html, /<script>[^<]*fbevents\.js/, `${file}: the pixel must not run outside CookieScript`);
     if (!wantsPixel(file)) { assert.equal(inits, 0, `${file}: no pixel expected`); continue; }
     assert.equal(inits, 1, `${file}: pixel must appear exactly once`);
+    assert.ok(html.includes("fbq('dataProcessingOptions',['LDU'],0,0);fbq('init','4317054311941000')"), `${file}: Limited Data Use must be set right before init`);
     const pixel = html.indexOf(PIXEL_OPEN);
     assert.ok(pixel > html.indexOf(TAG) && pixel < html.indexOf('</head>'), `${file}: pixel must be gated and come after CookieScript in <head>`);
     withPixel++;
