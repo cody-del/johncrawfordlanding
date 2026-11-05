@@ -10,7 +10,7 @@ from pathlib import Path
 
 DIST = Path(__file__).resolve().parents[1] / 'dist'
 # Default quote link; legal.js swaps in the landing page the visitor came from.
-QUOTE = '/lp/custom-window-treatments/#contact'
+QUOTE = '/#contact'
 QUOTE_LINK = f'href="{QUOTE}" data-quote-link'
 PHONE = '<a href="tel:+18188845464">(818) 884-5464</a>'
 EMAIL = '<a href="mailto:john@johncrawford.com">john@johncrawford.com</a>'

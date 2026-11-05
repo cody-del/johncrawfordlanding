@@ -7,7 +7,7 @@ import {createLeadHandler, createRateLimiter} from '../netlify/lib/lead-http.mjs
 const expectedSubmission = "John Crawford form submission: Google Ads lead\nSource: Google Ads Landing Page: Motorized Shades\nName: Ada  Lovelace King\nPhone: +18185550142\nEmail: ada@example.com\nI’d like to schedule: Free in-home consultation";
 const env = {GHL_PRIVATE_TOKEN: 'pit-test', GHL_LOCATION_ID: 'loc-test'};
 const lead = (extra = {}) => ({
-  form: 'quote', page: '/lp/motorized-shades/', name: 'Ada  Lovelace King', phone: '(818) 555-0142',
+  form: 'quote', page: '/motorized-shades/', name: 'Ada  Lovelace King', phone: '(818) 555-0142',
   email: ' Ada@Example.com ', 'appointment-type': 'in-home', website: '', elapsedMs: MIN_FILL_MS + 500, ...extra,
 });
 
@@ -41,7 +41,7 @@ test('a landing lead is upserted with the landing tag, its page source and the a
 
 test('without an appointment choice there is no extra tag but the notification note is still saved', async () => {
   const {calls, fetcher} = ghl();
-  const result = await submitLead(lead({'appointment-type': undefined, page: '/lp/custom-window-treatments/'}), {fetcher, env});
+  const result = await submitLead(lead({'appointment-type': undefined, page: '/'}), {fetcher, env});
   assert.equal(result.status, 200);
   assert.equal(calls.length, 2);
   assert.match(calls[1].body.body, /^John Crawford form submission: Google Ads lead/);
@@ -122,8 +122,8 @@ test('the rate limiter allows five per visitor per window', () => {
 });
 
 test('both landing forms are live and post to the quote form', () => {
-  for (const page of ['custom-window-treatments', 'motorized-shades']) {
-    const html = readFileSync(new URL(`../dist/lp/${page}/index.html`, import.meta.url), 'utf8');
+  for (const page of ['index.html', 'motorized-shades/index.html']) {
+    const html = readFileSync(new URL(`../dist/${page}`, import.meta.url), 'utf8');
     const form = html.match(/<form class="landing-form"[\s\S]*?<\/form>/)[0];
     assert.match(form, /data-lead-form="quote"/);
     assert.match(form, /<button class="btn btn-primary" type="submit">Get Free Quote<\/button>/);

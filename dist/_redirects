@@ -1,1 +1,5 @@
-/ /lp/custom-window-treatments/ 302
+# The landing pages used to live under /lp/. These keep old ad and bookmark links
+# working; Netlify passes query strings (gclid, utm_*) through to the new address.
+/lp/custom-window-treatments  /                   301
+/lp/motorized-shades          /motorized-shades/  301
+/lp/*                         /                   301

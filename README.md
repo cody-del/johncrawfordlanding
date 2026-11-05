@@ -4,8 +4,10 @@ Standalone static export of the two approved campaign landing pages, including t
 
 ## Routes
 
-- `/lp/custom-window-treatments/`
-- `/lp/motorized-shades/`
+- `/`: Custom Window Treatments
+- `/motorized-shades/`: Motorized Shades
+
+The pages used to live at `/lp/custom-window-treatments/` and `/lp/motorized-shades/`; `dist/_redirects` sends those (and anything else under `/lp/`) to the new addresses with permanent (301) redirects, keeping query strings such as `gclid` and `utm_*`.
 
 The pages retain the approved design, video heroes, reviews, product cards, benefits, appointment-only Woodland Hills section, and quote forms. Visitors can request a quote on the same page or call. The footer links to Accessibility (`/accessibility/`), Privacy Policy (`/privacy/`) and Terms of Service (`/terms/`) pages on the same domain; the quote form's privacy notice still opens a short summary dialog that links to the full policy. Run `python3 scripts/build-legal-pages.py` after changing the policy text.
 
@@ -18,13 +20,13 @@ npm run check
 npm run preview
 ```
 
-Open either route at `http://127.0.0.1:4318`, for example `http://127.0.0.1:4318/lp/custom-window-treatments/`. The local Python server does not apply Netlify redirects.
+Open either route at `http://127.0.0.1:4318`, for example `http://127.0.0.1:4318/motorized-shades/`. The local Python server does not apply Netlify redirects.
 
 ## Editing
 
 `dist/` is the deployable site and the editable source for this standalone repository:
 
-- `dist/lp/*/index.html`: page copy, sections, metadata, and form markup.
+- `dist/index.html` and `dist/motorized-shades/index.html`: page copy, sections, metadata, and form markup.
 - `dist/styles.css` and `dist/landings.css`: shared brand styles and landing-page styles.
 - `dist/app.js`: video, reviews, and dialog behavior.
 - `dist/assets/`: the images, videos, and fonts used by these pages.
@@ -33,7 +35,7 @@ There is no dependency on the full website's homepage or page generators. Edit t
 
 ## Deployment
 
-`netlify.toml` runs the checks and publishes `dist/`. Connect this repository to the intended Netlify site when ready. `dist/_redirects` sends the root URL to the custom-window-treatments landing page; both existing campaign routes remain available. Other hosts must serve `dist/` from the domain root and configure the equivalent root redirect if desired.
+`netlify.toml` runs the checks and publishes `dist/` to the Netlify site `johncrawfordlp`, served at https://go.johncrawfordcompany.com. `dist/_redirects` holds the `/lp/` redirects; another host would need the same rules.
 
 ## Current integration status
 
@@ -41,7 +43,7 @@ Quote forms send leads to John Crawford Company's GoHighLevel location through `
 
 The Netlify site needs two environment variables: `GHL_PRIVATE_TOKEN` (a private integration token made inside John Crawford's sub-account, with contact and note write access) and `GHL_LOCATION_ID`. John Crawford's GHL lead workflow should trigger on the `google_landing_page` tag. `npm run check` also runs `tests/lead.test.mjs`.
 
-Phone links are active. No advertising pixels or conversion tracking were added by this export. Pages retain `noindex, nofollow` and the existing review-domain canonical/social metadata; configure the intended production domain when launching.
+Phone links are active. No advertising pixels or conversion tracking were added by this export. Pages keep `noindex, nofollow` (they are ad landing pages); their canonical and social URLs are on https://go.johncrawfordcompany.com.
 
 ## Export source
 
