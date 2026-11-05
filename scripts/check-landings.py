@@ -5,11 +5,11 @@ from urllib.parse import unquote, urlsplit
 import re
 
 ROOT = Path(__file__).resolve().parents[1] / 'dist'
-LANDINGS = {Path('lp/custom-window-treatments/index.html'), Path('lp/motorized-shades/index.html')}
+LANDINGS = {Path('index.html'), Path('motorized-shades/index.html')}
 LEGAL = {Path('privacy/index.html'), Path('terms/index.html'), Path('accessibility/index.html')}
 PAGES = LANDINGS | LEGAL
 POLICY_LINKS = {'/accessibility/', '/privacy/', '/terms/'}
-LEGAL_LINKS = POLICY_LINKS | {'/', '/lp/custom-window-treatments/#contact', 'mailto:john@johncrawford.com'}
+LEGAL_LINKS = POLICY_LINKS | {'/', '/#contact', 'mailto:john@johncrawford.com'}
 
 
 class Page(HTMLParser):

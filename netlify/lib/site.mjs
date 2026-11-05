@@ -14,6 +14,9 @@ export const FORMS = {
   quote: {
     source: 'Google Ads Landing Page',
     pages: {
+      '/': 'Google Ads Landing Page: Custom Window Treatments',
+      '/motorized-shades/': 'Google Ads Landing Page: Motorized Shades',
+      // The pages' old addresses, for a page someone opened before they moved (dist/_redirects).
       '/lp/custom-window-treatments/': 'Google Ads Landing Page: Custom Window Treatments',
       '/lp/motorized-shades/': 'Google Ads Landing Page: Motorized Shades',
     },
