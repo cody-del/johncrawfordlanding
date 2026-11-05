@@ -7,7 +7,7 @@
 .landing-page .landing-hero .hero-content { width: min(700px, 100%); padding: 40px; background: rgb(250 247 243 / 88%); }
 .landing-page .landing-hero h1 { font-size: clamp(36px, 3.5vw, 46px); line-height: 1.12; }
 .landing-page .landing-hero h1 .landing-hero-title { margin: 0; font: inherit; white-space: nowrap; }
-.landing-page .landing-hero h1 .landing-hero-location { margin-top: 14px; font-size: .61em; font-weight: 500; line-height: 1.35; }
+.landing-page .landing-hero .hero-content > .landing-hero-location { margin-top: 14px; font-family: var(--display); font-size: clamp(22px, 2.135vw, 28px); font-weight: 500; line-height: 1.35; letter-spacing: -.025em; color: var(--walnut); }
 .landing-page .hero-content > .landing-promise { margin-top: 22px; font-size: 17px; line-height: 1.65; }
 .landing-page .hero-actions { gap: 12px; margin-top: 26px; }
 .landing-page .landing-hero > .hero-video-toggle { position: absolute; z-index: 3; right: 24px; bottom: 24px; border-radius: 50%; background: var(--linen); color: var(--walnut); }
@@ -102,7 +102,7 @@
   .landing-page .landing-hero .hero-content { padding: 28px 24px; }
   .landing-page .landing-hero h1 { font-size: clamp(30px, 8vw, 40px); }
   .landing-page .landing-hero h1 .landing-hero-title { white-space: normal; }
-  .landing-page .landing-hero h1 .landing-hero-location { margin-top: 12px; font-size: 22px; }
+  .landing-page .landing-hero .hero-content > .landing-hero-location { margin-top: 12px; font-size: 22px; }
   .landing-page .hero-content > .landing-promise { margin-top: 18px; font-size: 16px; }
   .landing-page .hero-actions { display: grid; grid-template-columns: 1.3fr 1fr; }
   .landing-page .hero-actions > .btn { min-width: 0; padding-inline: 10px; font-size: 10px; letter-spacing: .08em; }
