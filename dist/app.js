@@ -189,10 +189,10 @@ if (reviewsSection && reviewsTrack && reviewCards.length) {
 
 // Cloudflare Turnstile: an invisible human check on every lead form; netlify/lib/turnstile.mjs
 // checks its token. One widget serves both John Crawford sites. Other hosts, such as Netlify
-// previews, get Cloudflare's always-pass test key. While the live key is empty, live forms
-// send no token and the server skips the check (it only checks once TURNSTILE_SECRET_KEY is set).
+// previews, get Cloudflare's always-pass test key. The widget is "John Crawford lead forms" in the
+// gbp@shadestrategy.com Cloudflare account; the server only checks once TURNSTILE_SECRET_KEY is set.
 const TURNSTILE_LIVE_HOSTS = ['www.johncrawfordcompany.com', 'johncrawfordcompany.com', 'go.johncrawfordcompany.com'];
-const TURNSTILE_SITE_KEY = TURNSTILE_LIVE_HOSTS.includes(location.hostname) ? '' : '1x00000000000000000000AA';
+const TURNSTILE_SITE_KEY = TURNSTILE_LIVE_HOSTS.includes(location.hostname) ? '0x4AAAAAAF1MJ5a53NsFXu0h' : '1x00000000000000000000AA';
 let turnstileLoaded;
 function humanCheck(form) {
   if (!TURNSTILE_SITE_KEY) return { token: async () => '', reset() {} };
