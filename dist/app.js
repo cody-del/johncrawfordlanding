@@ -259,7 +259,7 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
       if (!response.ok || result.success !== true) throw new Error(result.error || LEAD_CALL_US);
       form.reset();
       form.classList.add('is-sent');
-      show('Thank you. We received your request and will contact you soon.', false);
+      show(result.warning || 'Thank you. We received your request and will contact you soon.', false);
     } catch (error) {
       show(error.name === 'TimeoutError' || error instanceof TypeError || error instanceof SyntaxError ? LEAD_CALL_US : error.message, true);
     } finally {
