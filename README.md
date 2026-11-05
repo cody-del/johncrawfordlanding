@@ -45,6 +45,14 @@ The Netlify site needs two environment variables: `GHL_PRIVATE_TOKEN` (a private
 
 Phone links are active. No advertising pixels or conversion tracking were added by this export. Pages keep `noindex, nofollow` (they are ad landing pages); their canonical and social URLs are on https://go.johncrawfordcompany.com.
 
+## Spam protection
+
+Every lead form goes through these checks in `/api/lead` before anything reaches GHL:
+
+- **Cloudflare Turnstile.** `dist/app.js` adds an invisible human check to each form. Visitors only see a checkbox if Cloudflare wants one. `netlify/lib/turnstile.mjs` (identical in `johncrawfordcompany` and `johncrawfordlanding`) checks the token with Cloudflare and refuses the lead with a 403 when the token is missing or refused. If Cloudflare can't be reached, the lead goes through rather than being lost. One widget, made in the gbp@shadestrategy.com Cloudflare account, covers `www.johncrawfordcompany.com`, `johncrawfordcompany.com` and `go.johncrawfordcompany.com`. Its site key is `TURNSTILE_SITE_KEY` in `dist/app.js` (public, in the page) and its secret is the Netlify variable `TURNSTILE_SECRET_KEY` (Production, Functions, secret). Other hosts, such as deploy previews, use Cloudflare's always-pass test site key; give Deploy Previews the test secret `1x0000000000000000000000000000000AA`, or no secret, which switches the check off. Netlify functions read the secret at deploy time, so redeploy after setting it.
+- **Netlify rate limit.** `netlify/functions/lead.mjs` limits each visitor (IP + domain) to 10 requests per 3 minutes. Netlify counts these itself, for every copy of the function and across restarts, and answers with a 429.
+- **In the function:** a hidden `website` field, a 3-second minimum after page load, same-origin JSON only, size limits, field checks, and an in-memory limit of 5 leads per visitor per 15 minutes.
+
 ## Export source
 
 The hero videos and posters now match the main website's corrected `20261104-color2` edit, including the coastal ocean detail. Keep the desktop and mobile exports synchronized with that approved edit.

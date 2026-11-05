@@ -428,3 +428,7 @@ address { font-style: normal; }
 form.is-sent > :not(h2):not(.lead-form-status) { display: none !important; }
 form.is-sent .lead-form-status { margin-top: 8px; }
 [aria-invalid="true"] { border-color: #9b1c1c !important; }
+
+/* Turnstile human check (app.js). It is interaction-only, so it shows only when a visitor must tick the box; the button's own top margin spaces it. */
+.lead-form-turnstile { margin-top: 14px; max-width: 100%; }
+.lead-form-turnstile:empty { display: none; }
