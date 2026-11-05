@@ -4,7 +4,7 @@
 // (cody-del/beautifullanding, netlify/lib/consultation.mjs). The token and
 // location come from this site's Netlify environment variables. Landing-page
 // campaign tags and form configuration live in site.mjs.
-import {FORMS, LEAD_TAG, PAGE_LEAD_TAGS, PHONE} from './site.mjs';
+import {FORMS, PAGE_LEAD_TAGS, PHONE} from './site.mjs';
 
 export const GHL_API = 'https://services.leadconnectorhq.com';
 const GHL_VERSION = '2021-07-28';
@@ -69,7 +69,7 @@ export async function submitLead(data, {fetcher = fetch, rateLimited = () => fal
     phone: `+${digits.length === 10 ? '1' : ''}${digits}`,
     email: data.email.trim().toLowerCase(),
     source,
-    tags: [LEAD_TAG],
+    tags: [],
   };
   if (typeof data.page === 'string' && Object.hasOwn(PAGE_LEAD_TAGS, data.page)) {
     contact.tags.push(PAGE_LEAD_TAGS[data.page]);
@@ -82,8 +82,7 @@ export async function submitLead(data, {fetcher = fetch, rateLimited = () => fal
   }
   // Save a complete submission snapshot before tag-triggered workflows can run.
   // The note is created for every form, including compact forms with no extra answers.
-  const inquiryType = LEAD_TAG === 'google_landing_page'
-    ? 'Google Ads lead' : data.form === 'repair' ? 'Website repair request' : 'Website lead';
+  const inquiryType = 'Google Ads lead';
   const submissionDetails = () => [
     `John Crawford form submission: ${inquiryType}`, `Source: ${source}`,
     `Name: ${data.name.trim()}`, `Phone: ${contact.phone}`, `Email: ${contact.email}`, ...note,

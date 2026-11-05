@@ -1,13 +1,7 @@
 // What this site's quote form sends to GoHighLevel; netlify/lib/lead.mjs does the sending.
 export const PHONE = '(818) 884-5464';
 
-// Every landing page lead gets this tag, as on Shade Strategy's other ad landing
-// pages. John Crawford's GHL lead workflow should trigger on it; renaming it
-// detaches every new lead from that workflow without any error, so change the
-// GHL trigger in the same sitting.
-export const LEAD_TAG = 'google_landing_page';
-
-// Keep the workflow tag above and add the requested campaign tag per page.
+// Each landing page sends its own campaign tag to GoHighLevel.
 export const PAGE_LEAD_TAGS = {
   '/': 'google_window treatments',
   '/motorized-shades/': 'google_motorized shades',

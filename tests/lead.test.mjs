@@ -23,7 +23,7 @@ function ghl({upsert = {status: 200, body: {contact: {id: 'c-1'}}}, note = {stat
   return {calls, fetcher};
 }
 
-test('a landing lead is upserted with the landing tag, its page source and the appointment tag', async () => {
+test('a landing lead is upserted with its campaign tag, its page source and the appointment tag', async () => {
   const {calls, fetcher} = ghl();
   const result = await submitLead(lead(), {fetcher, env});
   assert.deepEqual(result, {status: 200, body: {success: true, contactId: 'c-1'}});
@@ -32,7 +32,7 @@ test('a landing lead is upserted with the landing tag, its page source and the a
   assert.deepEqual(calls[0].body, {
     locationId: 'loc-test', firstName: 'Ada', lastName: 'Lovelace King', phone: '+18185550142',
     email: 'ada@example.com', source: 'Google Ads Landing Page: Motorized Shades',
-    tags: ['google_landing_page', 'google_motorized shades', 'in-home-consultation'],
+    tags: ['google_motorized shades', 'in-home-consultation'],
     customFields: [{id: 'INk19lHx5XU2HQQhdFNQ', field_value: expectedSubmission}],
   });
   assert.equal(calls[1].url, `${GHL_API}/contacts/c-1/notes`);
@@ -45,7 +45,7 @@ test('without an appointment choice the page tag and notification note are still
   assert.equal(result.status, 200);
   assert.equal(calls.length, 2);
   assert.match(calls[1].body.body, /^John Crawford form submission: Google Ads lead/);
-  assert.deepEqual(calls[0].body.tags, ['google_landing_page', 'google_window treatments']);
+  assert.deepEqual(calls[0].body.tags, ['google_window treatments']);
   assert.equal(calls[0].body.source, 'Google Ads Landing Page: Custom Window Treatments');
 });
 
@@ -53,7 +53,7 @@ test('an unknown page falls back to the form source', async () => {
   const {calls, fetcher} = ghl();
   await submitLead(lead({page: '/somewhere/else/'}), {fetcher, env});
   assert.equal(calls[0].body.source, 'Google Ads Landing Page');
-  assert.deepEqual(calls[0].body.tags, ['google_landing_page', 'in-home-consultation']);
+  assert.deepEqual(calls[0].body.tags, ['in-home-consultation']);
 });
 
 test('bots, fast fills, bad fields and unknown forms never reach GHL', async () => {
@@ -148,7 +148,7 @@ test('each landing route sends only its campaign tag and preserves appointment t
       const {calls, fetcher} = ghl();
       const result = await submitLead(lead({page, 'appointment-type': choice, tags: ['untrusted-tag']}), {fetcher, env});
       assert.equal(result.status, 200);
-      assert.deepEqual(calls[0].body.tags, ['google_landing_page', expectedTag, ...(appointmentTag ? [appointmentTag] : [])]);
+      assert.deepEqual(calls[0].body.tags, [expectedTag, ...(appointmentTag ? [appointmentTag] : [])]);
     }
   }
 });
