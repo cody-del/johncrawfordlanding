@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
 import {verifyHuman, SITEVERIFY_URL, TOKEN_FIELD} from '../netlify/lib/turnstile.mjs';
 import {createLeadHandler} from '../netlify/lib/lead-http.mjs';
 import {config} from '../netlify/functions/lead.mjs';
@@ -67,4 +68,59 @@ test('every lead form gets the widget, with the test key away from the live host
   assert.match(app, /const human = humanCheck\(form\);/);
   assert.match(app, /payload\['cf-turnstile-response'\] = token;/);
   assert.match(app, /TURNSTILE_LIVE_HOSTS\.includes\(location\.hostname\) \? '[^']*' : '1x00000000000000000000AA'/);
+});
+
+// Runs dist/app.js's real humanCheck() against a fake Cloudflare widget and a clock the test controls.
+async function runHumanCheck({expired = false, ageMs = 0, failScript = false} = {}) {
+  const app = readFileSync(new URL('../dist/app.js', import.meta.url), 'utf8');
+  const start = app.indexOf('const TURNSTILE_LIVE_HOSTS');
+  const end = app.indexOf('\n}\n', app.indexOf('function humanCheck')) + 3;
+  const clock = {now: 1_000_000};
+  const state = {resets: 0, options: null, token: 'token-1', expired};
+  const turnstile = {
+    render: (container, options) => { state.options = options; options.callback(state.token); return 'w1'; },
+    getResponse: () => state.token,
+    isExpired: () => state.expired,
+    reset: () => { state.resets++; state.expired = false; state.token = `token-${state.resets + 1}`; state.options.callback(state.token); },
+  };
+  const window = {};
+  const sandbox = {
+    window, turnstile, location: {hostname: 'www.johncrawfordcompany.com'},
+    Date: {now: () => clock.now},
+    setTimeout: callback => setImmediate(callback),
+    document: {
+      createElement: () => ({}),
+      head: {append: script => queueMicrotask(() => (failScript ? script.onerror() : window.onTurnstileLoad()))},
+    },
+  };
+  const human = vm.runInNewContext(`${app.slice(start, end)}\nhumanCheck`, sandbox)({
+    dataset: {leadForm: 'contact'}, querySelector: () => ({before() {}}),
+  });
+  await new Promise(resolve => setImmediate(resolve));
+  clock.now += ageMs;
+  return {token: await human.token(), state, human};
+}
+
+test('a fresh token is sent as is', async () => {
+  const {token, state} = await runHumanCheck({ageMs: 200_000});
+  assert.equal(token, 'token-1');
+  assert.equal(state.resets, 0);
+  assert.equal(state.options['refresh-expired'], 'auto');
+});
+
+test('a token older than 270 s is swapped for a fresh one before sending', async () => {
+  const {token, state} = await runHumanCheck({ageMs: 271_000});
+  assert.equal(token, 'token-2');
+  assert.equal(state.resets, 1);
+});
+
+test('a token Cloudflare marks expired is swapped, whatever its age', async () => {
+  const {token, state} = await runHumanCheck({expired: true, ageMs: 1_000});
+  assert.equal(token, 'token-2');
+  assert.equal(state.resets, 1);
+});
+
+test('if the Turnstile script never loads the lead still goes, with an empty token', async () => {
+  const {token} = await runHumanCheck({failScript: true});
+  assert.equal(token, '');
 });

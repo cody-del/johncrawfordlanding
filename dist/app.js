@@ -193,6 +193,9 @@ if (reviewsSection && reviewsTrack && reviewCards.length) {
 // gbp@shadestrategy.com Cloudflare account; the server only checks once TURNSTILE_SECRET_KEY is set.
 const TURNSTILE_LIVE_HOSTS = ['www.johncrawfordcompany.com', 'johncrawfordcompany.com', 'go.johncrawfordcompany.com'];
 const TURNSTILE_SITE_KEY = TURNSTILE_LIVE_HOSTS.includes(location.hostname) ? '0x4AAAAAAF1MJ5a53NsFXu0h' : '1x00000000000000000000AA';
+// Cloudflare honours a token for 300 s. One older than this is swapped for a fresh one before
+// sending, so a visitor who took a while (or left the tab in the background) isn't refused.
+const TURNSTILE_MAX_TOKEN_AGE_MS = 270000;
 let turnstileLoaded;
 function humanCheck(form) {
   if (!TURNSTILE_SITE_KEY) return { token: async () => '', reset() {} };
@@ -207,9 +210,13 @@ function humanCheck(form) {
   let widget;
   let failed = false;
   let needsTick = false;
+  // When the current token arrived (0 = none yet, or it was just reset).
+  let issuedAt = 0;
   turnstileLoaded.then(() => {
     widget = turnstile.render(container, {
       sitekey: TURNSTILE_SITE_KEY, action: form.dataset.leadForm, size: 'flexible', appearance: 'interaction-only',
+      'refresh-expired': 'auto',
+      callback: () => { issuedAt = Date.now(); },
       'before-interactive-callback': () => { needsTick = true; },
       'error-callback': () => { failed = true; },
     });
@@ -218,6 +225,14 @@ function humanCheck(form) {
     // The token; '' when the check couldn't run (the server then decides); null while the
     // visitor still has to tick the box.
     async token() {
+      // A token Cloudflare marks expired, or one close to it, is swapped for a fresh one first.
+      try {
+        if (widget !== undefined && !failed
+          && (turnstile.isExpired?.(widget) || (issuedAt && Date.now() - issuedAt > TURNSTILE_MAX_TOKEN_AGE_MS))) {
+          issuedAt = 0;
+          turnstile.reset(widget);
+        }
+      } catch {}
       for (let waited = 0; waited < 8000; waited += 200) {
         if (failed) return '';
         const token = widget !== undefined && turnstile.getResponse(widget);
@@ -227,7 +242,7 @@ function humanCheck(form) {
       return needsTick ? null : '';
     },
     // Tokens work once, so a failed send needs a fresh one.
-    reset() { if (widget !== undefined) turnstile.reset(widget); },
+    reset() { if (widget !== undefined) { issuedAt = 0; turnstile.reset(widget); } },
   };
 }
 
