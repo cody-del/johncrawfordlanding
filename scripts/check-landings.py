@@ -63,7 +63,8 @@ while pending:
             scripts = re.findall(r'<script\b[^>]*>', text)
             # The CookieScript banner (every page) and legal.js are the only scripts on the policy pages.
             cookiescript = '<script type="text/javascript" charset="UTF-8" src="https://cdn.cookie-script.com/s/bb49fbb8483ced09e550fab9f04307c1.js">'
-            assert scripts == [cookiescript, '<script src="/legal.js?v=legal-1" defer>'], f'{relative}: policy pages load only the cookie banner and legal.js'
+            clickcease = '<script async src="https://ob.esnbranding.com/i/812741747104d2a36e3927a603f46db5.js" class="ct_clicktrue">'
+            assert scripts == [cookiescript, clickcease, '<script src="/legal.js?v=legal-1" defer>'], f'{relative}: policy pages load only the cookie banner, ClickCease and legal.js'
         for href in page.links:
             assert href.startswith('#') or href == 'tel:+18188845464' or href in allowed, f'{relative}: unexpected outbound link: {href}'
             if href.startswith('#'):

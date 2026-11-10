@@ -52,3 +52,18 @@ test('the Lead event fires only after a confirmed lead, without contact details'
   assert.ok(app.indexOf("fbq('track', 'Lead')") > app.indexOf("Thank you. We received your request"), 'Lead must follow the confirmed thank-you');
 });
 
+// ClickCease (click-fraud protection for John Crawford's ads) runs on every page, outside the
+// cookie consent gate: early in <head> after CookieScript, plus its noscript frame first in <body>.
+const CLICKCEASE = '<script async src="https://ob.esnbranding.com/i/812741747104d2a36e3927a603f46db5.js" class="ct_clicktrue"></script>';
+const CLICKCEASE_NOSCRIPT = '<noscript><iframe src="https://ob.esnbranding.com/ns/812741747104d2a36e3927a603f46db5.html?ch=" width="0" height="0" style="display:none"></iframe></noscript>';
+
+test('every page loads ClickCease once, after CookieScript, with its noscript frame first in <body>', () => {
+  for (const file of pages(dist)) {
+    const html = readFileSync(file, 'utf8');
+    assert.equal(html.split(CLICKCEASE).length - 1, 1, `${file}: ClickCease script must appear exactly once`);
+    assert.ok(html.indexOf(CLICKCEASE) > html.indexOf(TAG) && html.indexOf(CLICKCEASE) < html.indexOf('</head>'), `${file}: ClickCease must follow CookieScript in <head>`);
+    assert.equal(html.split(CLICKCEASE_NOSCRIPT).length - 1, 1, `${file}: ClickCease noscript must appear exactly once`);
+    assert.match(html, /<body[^>]*>\s*<noscript><iframe src="https:\/\/ob\.esnbranding\.com\/ns\//, `${file}: ClickCease noscript must be first in <body>`);
+  }
+});
+
