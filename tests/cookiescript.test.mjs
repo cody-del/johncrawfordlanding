@@ -67,3 +67,42 @@ test('every page loads ClickCease once, after CookieScript, with its noscript fr
   }
 });
 
+
+// Google Ads (AW-853283675): the Google tag with the website call conversion on the two landing
+// pages, after CookieScript (which sets Google Consent Mode first), and none on the policy pages.
+const ADS_ID = 'AW-853283675';
+const ADS_LOADER = `<script async src="https://www.googletagmanager.com/gtag/js?id=${ADS_ID}"></script>`;
+const ADS_CALL = `gtag('config','${ADS_ID}/YQF9CNz94rAdENum8JYD',{'phone_conversion_number':'(818) 884-5464'});`;
+
+test('the Google Ads tag and call conversion load once on each landing page, after CookieScript', () => {
+  let withTag = 0;
+  for (const file of pages(dist)) {
+    const html = readFileSync(file, 'utf8');
+    if (!wantsPixel(file)) { assert.ok(!html.includes(ADS_ID), `${file}: no Google Ads tag expected`); continue; }
+    const head = html.slice(html.indexOf('<head>'), html.indexOf('</head>'));
+    assert.equal(html.split(ADS_LOADER).length - 1, 1, `${file}: Google tag loader must appear exactly once`);
+    assert.ok(head.indexOf(ADS_LOADER) > head.indexOf(TAG) && head.indexOf(ADS_LOADER) > head.indexOf(CLICKCEASE), `${file}: Google tag must follow CookieScript and ClickCease`);
+    assert.equal(head.split(`gtag('config','${ADS_ID}');`).length - 1, 1, `${file}: Google tag config`);
+    assert.equal(head.split(ADS_CALL).length - 1, 1, `${file}: call conversion config`);
+    assert.ok(html.includes('(818) 884-5464'), `${file}: the number Google swaps must be on the page`);
+    withTag++;
+  }
+  assert.equal(withTag, 2);
+});
+
+test('the Google Ads lead conversion fires once, after a confirmed lead, keyed to the GHL contact', () => {
+  const app = readFileSync(new URL('../dist/app.js', import.meta.url), 'utf8');
+  const calls = app.match(/gtag\('event', 'conversion'[^;]*;/g) || [];
+  assert.equal(calls.length, 1);
+  assert.ok(calls[0].includes(`send_to: '${ADS_ID}/sDwoCL-Q6uEcENum8JYD'`));
+  assert.ok(calls[0].includes("transaction_id: 'lead_' + result.contactId"));
+  assert.ok(app.indexOf(calls[0]) > app.indexOf("result.success !== true"), 'conversion must follow the GHL success check');
+  assert.ok(app.indexOf(calls[0]) > app.indexOf("Thank you. We received your request"), 'conversion must follow the confirmed thank-you');
+});
+
+test('the privacy policy discloses Google Ads and Consent Mode', () => {
+  const policy = readFileSync(join(dist, 'privacy/index.html'), 'utf8');
+  assert.ok(policy.includes('Google tag from Google Ads'));
+  assert.ok(policy.includes('Google Consent Mode'));
+  assert.ok(policy.includes('Google forwarding number'));
+});
