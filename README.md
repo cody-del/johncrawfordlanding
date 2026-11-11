@@ -43,7 +43,7 @@ Quote forms send leads to John Crawford Company's GoHighLevel location through `
 
 The Netlify site needs two environment variables: `GHL_PRIVATE_TOKEN` (a private integration token made inside John Crawford's sub-account, with contact and note write access) and `GHL_LOCATION_ID`. John Crawford's GHL lead workflows should trigger on `google_window treatments` or `google_motorized shades`. `npm run check` also runs `tests/lead.test.mjs`.
 
-Phone links are active. No advertising pixels or conversion tracking were added by this export. Pages keep `noindex, nofollow` (they are ad landing pages); their canonical and social URLs are on https://go.johncrawfordcompany.com.
+Phone links are active. Both landing pages load Google Ads' Google tag (`AW-853283675`) after CookieScript, which sets Google Consent Mode first (ad cookies only with Targeting consent). The tag carries the website call conversion "Call ((818) 884-5464)" (`AW-853283675/YQF9CNz94rAdENum8JYD`), which swaps the page's phone number for a Google forwarding number for ad visitors. After GHL confirms a lead, `dist/app.js` sends the "SS - Submit Lead Form" conversion (`AW-853283675/sDwoCL-Q6uEcENum8JYD`) with `transaction_id` `lead_<GHL contact id>`. The Meta Pixel (`4317054311941000`) runs only with Targeting consent. `tests/cookiescript.test.mjs` pins all of these. Pages keep `noindex, nofollow` (they are ad landing pages); their canonical and social URLs are on https://go.johncrawfordcompany.com.
 
 ## Spam protection
 

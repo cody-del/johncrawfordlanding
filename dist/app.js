@@ -325,6 +325,14 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
       // Meta Pixel lead, only for a lead GHL confirmed and only if the visitor allowed Targeting cookies
       // (otherwise CookieScript never loaded the pixel and fbq doesn't exist). No contact details are sent.
       try { if (typeof fbq === 'function') fbq('track', 'Lead'); } catch {}
+      // Google Ads lead conversion ("SS - Submit Lead Form"), also only for a lead GHL confirmed. The GHL
+      // contact id is the transaction id, so a repeat send for the same contact counts once. Google Consent
+      // Mode (set by CookieScript) decides whether Google may use ad cookies for it. No contact details are sent.
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'conversion', { send_to: 'AW-853283675/sDwoCL-Q6uEcENum8JYD', ...(result.contactId ? { transaction_id: 'lead_' + result.contactId } : {}) });
+        }
+      } catch {}
     } catch (error) {
       show(error.name === 'TimeoutError' || error instanceof TypeError || error instanceof SyntaxError ? LEAD_CALL_US : error.message, true);
     } finally {
