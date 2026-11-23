@@ -212,11 +212,11 @@
 .landing-page .landing-hero { padding-block: 48px; }
 .landing-page .landing-hero::after { inset: 0; height: auto; background: linear-gradient(90deg, rgb(15 12 10 / 68%) 0%, rgb(15 12 10 / 60%) 48%, rgb(15 12 10 / 18%) 85%); }
 .landing-page .landing-hero-inner { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 72px; padding: 0; background: none; border: 0; border-radius: 0; }
-.landing-page .landing-hero .hero-content { padding: 0 0 64px; background: none; border: 0; border-radius: 0; color: white; }
-.landing-page .landing-hero h1 { color: white; font-size: clamp(40px, 4.1vw, 58px); line-height: 1.08; letter-spacing: -.025em; }
+.landing-page .landing-hero .hero-content { padding: 0; background: none; border: 0; border-radius: 0; color: white; }
+.landing-page .landing-hero h1 { color: white; font-size: clamp(44px, 4.5vw, 64px); line-height: 1.08; letter-spacing: -.025em; }
 .landing-page .hero-content > .landing-service-area { color: white; font-size: 12px; margin-bottom: 20px; }
 .landing-page .hero-content > .landing-promise { max-width: 440px; color: white; font-size: 18px; line-height: 1.65; margin-top: 24px; }
-.landing-page .hero-content .hero-video-toggle { position: absolute; left: 0; right: auto; bottom: 0; justify-content: center; background: rgb(15 12 10 / 40%); color: white; border: 1px solid rgb(255 255 255 / 75%); border-radius: 50%; }
+.landing-page .hero-content .hero-video-toggle { position: static; margin-top: 18px; justify-content: center; background: rgb(15 12 10 / 40%); color: white; border: 1px solid rgb(255 255 255 / 75%); border-radius: 50%; }
 .landing-page .hero-content .hero-video-toggle:focus-visible { outline: 2px solid white; outline-offset: 4px; }
 .landing-page .landing-hero .landing-form { padding: 30px; background: #faf7f3; border: 1px solid #e5dcd4; border-radius: 0 28px 0 28px; box-shadow: 0 12px 36px #160e0a14; }
 .landing-page .landing-hero .landing-qualification { padding: 0; border: 0; background: none; }
@@ -240,11 +240,11 @@
 }
 @media (max-width: 800px) {
   .landing-page .landing-hero { padding-block: 36px; }
-  .landing-page .landing-hero-inner { grid-template-columns: minmax(0, 1fr); gap: 32px; }
-  .landing-page .landing-hero .hero-content { min-height: 300px; padding-bottom: 60px; }
-  .landing-page .landing-hero .hero-media { bottom: auto; height: 440px; }
-  .landing-page .landing-hero::after { bottom: auto; height: 440px; background: rgb(15 12 10 / 62%); }
-  .landing-page .landing-hero h1 { font-size: clamp(30px, 8.1vw, 44px); }
+  .landing-page .landing-hero-inner { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .landing-page .landing-hero .hero-content { min-height: 0; padding-bottom: 0; }
+  .landing-page .landing-hero .hero-media { bottom: auto; height: calc(var(--hero-copy-height, 320px) + 116px); }
+  .landing-page .landing-hero::after { bottom: auto; height: calc(var(--hero-copy-height, 320px) + 116px); background: rgb(15 12 10 / 62%); }
+  .landing-page .landing-hero h1 { font-size: clamp(32px, 9vw, 48px); }
   .landing-page .hero-content > .landing-service-area { margin-bottom: 16px; font-size: 11px; letter-spacing: .04em; }
   .landing-page .hero-content > .landing-promise { font-size: 16px; line-height: 1.6; margin-top: 18px; }
   .landing-review-strip { padding-block: 20px; }
@@ -261,3 +261,5 @@
   .landing-page .landing-hero .landing-form { padding: 24px 20px; }
   .landing-page .landing-products { padding-top: 32px; }
 }
+
+.landing-page .landing-hero h1 .landing-heading-detail { margin-top: 12px; font-size: .62em; line-height: 1.2; letter-spacing: -.015em; }

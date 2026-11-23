@@ -61,9 +61,16 @@ const videoToggle = document.querySelector('.hero-video-toggle');
 if (hero && heroVideo && videoToggle) {
 const mobileVideo = window.matchMedia('(max-width: 700px)');
 const connection = navigator.connection;
+// Keep the mobile backdrop behind all of the copy when text size or wrapping changes.
+const heroCopy = hero.querySelector('.hero-content');
+if (heroCopy && 'ResizeObserver' in window) {
+  new ResizeObserver(() => {
+    hero.style.setProperty('--hero-copy-height', `${heroCopy.getBoundingClientRect().height}px`);
+  }).observe(heroCopy);
+}
 let wantsPlayback = false;
 let playbackReady = false;
-const autoPlaybackAllowed = () => !mobileVideo.matches && !reduceMotion.matches && !connection?.saveData && !['slow-2g', '2g', '3g'].includes(connection?.effectiveType);
+const autoPlaybackAllowed = () => !reduceMotion.matches && !connection?.saveData && !['slow-2g', '2g', '3g'].includes(connection?.effectiveType);
 let heroVisible = true;
 let userPaused = false;
 
@@ -128,7 +135,7 @@ if (heroVideo.canPlayType('video/mp4')) {
     new IntersectionObserver(([entry]) => {
       heroVisible = entry.isIntersecting;
       syncVideoPlayback();
-    }, { threshold: 0 }).observe(hero);
+    }, { threshold: 0 }).observe(hero.querySelector('.hero-content') || hero);
   }
   // Let the poster, fonts and consultation form render before requesting video.
   const deferVideo = () => setTimeout(() => {
@@ -140,7 +147,7 @@ if (heroVideo.canPlayType('video/mp4')) {
     };
     if ('requestIdleCallback' in window) requestIdleCallback(start, {timeout: 2000});
     else start();
-  }, 3500);
+  }, 1200);
   if (document.readyState === 'complete') deferVideo();
   else window.addEventListener('load', deferVideo, {once: true});
   syncVideoPlayback();
