@@ -208,25 +208,56 @@
 /* Keep the existing gold rating treatment readable against white and cream. */
 .landing-page .review-stars { color: #996000; }
 
-/* One continuous cream surface for the introduction, review and consultation form. */
-.landing-page .landing-hero-inner { padding: 40px; gap: 56px; background: rgb(250 247 243 / 96%); border: 1px solid rgb(255 255 255 / 65%); border-radius: 0 28px 0 28px; }
-.landing-page .landing-hero .hero-content,
-.landing-page .landing-hero .landing-form { padding: 0; background: transparent; border: 0; border-radius: 0; box-shadow: none; }
-.landing-page .landing-hero h1 { font-size: clamp(34px, 3.1vw, 44px); }
-.landing-page .landing-hero .hero-actions { margin-top: 16px; align-items: flex-start; }
-.landing-page .landing-hero .hero-actions .hero-phone { align-self: flex-start; }
+/* Open video hero: the consultation form is the only card. */
+.landing-page .landing-hero { padding-block: 48px; }
+.landing-page .landing-hero::after { inset: 0; height: auto; background: linear-gradient(90deg, rgb(15 12 10 / 68%) 0%, rgb(15 12 10 / 60%) 48%, rgb(15 12 10 / 18%) 85%); }
+.landing-page .landing-hero-inner { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 72px; padding: 0; background: none; border: 0; border-radius: 0; }
+.landing-page .landing-hero .hero-content { padding: 0 0 64px; background: none; border: 0; border-radius: 0; color: white; }
+.landing-page .landing-hero h1 { color: white; font-size: clamp(40px, 4.1vw, 58px); line-height: 1.08; letter-spacing: -.025em; }
+.landing-page .hero-content > .landing-service-area { color: white; font-size: 12px; margin-bottom: 20px; }
+.landing-page .hero-content > .landing-promise { max-width: 440px; color: white; font-size: 18px; line-height: 1.65; margin-top: 24px; }
+.landing-page .hero-content .hero-video-toggle { position: absolute; left: 0; right: auto; bottom: 0; justify-content: center; background: rgb(15 12 10 / 40%); color: white; border: 1px solid rgb(255 255 255 / 75%); border-radius: 50%; }
+.landing-page .hero-content .hero-video-toggle:focus-visible { outline: 2px solid white; outline-offset: 4px; }
+.landing-page .landing-hero .landing-form { padding: 30px; background: #faf7f3; border: 1px solid #e5dcd4; border-radius: 0 28px 0 28px; box-shadow: 0 12px 36px #160e0a14; }
 .landing-page .landing-hero .landing-qualification { padding: 0; border: 0; background: none; }
-.landing-page .hero-content .hero-video-toggle { right: 0; bottom: -10px; background: transparent; }
+.landing-review-strip { padding-block: 22px; background: white; border-bottom: 1px solid var(--line); scroll-margin-top: 24px; }
+.landing-review-strip-inner { display: flex; justify-content: center; align-items: center; gap: 36px; }
+.landing-google-badge { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.landing-google-badge img { width: 32px; height: 32px; }
+.landing-google-name { font-size: 16px; font-weight: 500; line-height: 1.25; color: #3c4043; }
+.landing-review-stars { color: #996000; font-size: 14px; letter-spacing: .08em; line-height: 1.4; }
+.landing-strip-quote { display: flex; align-items: baseline; gap: 16px; margin: 0; padding-left: 36px; border-left: 1px solid var(--line); }
+.landing-strip-quote blockquote { margin: 0; }
+.landing-strip-quote blockquote p { font-family: var(--display); font-size: 21px; line-height: 1.4; }
+.landing-strip-quote figcaption { font-size: 12px; white-space: nowrap; }
 .landing-page .landing-products { padding-top: 48px; }
-.landing-page .landing-hero-review { scroll-margin-top: 28px; }
 @media (max-width: 1050px) {
-  .landing-page .landing-hero-inner { padding: 30px; gap: 32px; }
+  .landing-page .landing-hero-inner { gap: 36px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .landing-page .landing-hero .landing-form { padding: 24px; }
+  .landing-page .landing-hero h1 { font-size: 40px; }
+  .landing-strip-quote { display: block; }
+  .landing-strip-quote figcaption { margin-top: 4px; }
 }
 @media (max-width: 800px) {
-  .landing-page .landing-hero-inner { padding: 28px; gap: 36px; }
-  .landing-page .landing-hero h1 { font-size: clamp(30px, 6vw, 42px); }
+  .landing-page .landing-hero { padding-block: 36px; }
+  .landing-page .landing-hero-inner { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .landing-page .landing-hero .hero-content { min-height: 300px; padding-bottom: 60px; }
+  .landing-page .landing-hero .hero-media { bottom: auto; height: 440px; }
+  .landing-page .landing-hero::after { bottom: auto; height: 440px; background: rgb(15 12 10 / 62%); }
+  .landing-page .landing-hero h1 { font-size: clamp(30px, 8.1vw, 44px); }
+  .landing-page .hero-content > .landing-service-area { margin-bottom: 16px; font-size: 11px; letter-spacing: .04em; }
+  .landing-page .hero-content > .landing-promise { font-size: 16px; line-height: 1.6; margin-top: 18px; }
+  .landing-review-strip { padding-block: 20px; }
+  .landing-review-strip-inner { gap: 20px; }
+  .landing-strip-quote { padding-left: 20px; }
+  .landing-strip-quote blockquote p { font-size: 18px; }
 }
-@media (max-width: 700px) {
-  .landing-page .landing-hero-inner { padding: 26px 20px; gap: 32px; }
+@media (max-width: 480px) {
+  .landing-review-strip-inner { flex-direction: column; gap: 12px; text-align: center; }
+  .landing-google-badge > div { display: flex; align-items: center; gap: 10px; }
+  .landing-google-badge img { width: 24px; height: 24px; }
+  .landing-strip-quote { border: 0; padding: 0; }
+  .landing-strip-quote blockquote p { font-size: 18px; }
+  .landing-page .landing-hero .landing-form { padding: 24px 20px; }
   .landing-page .landing-products { padding-top: 32px; }
 }
