@@ -57,8 +57,7 @@ document.querySelectorAll('[data-landing-dialog]').forEach(button => {
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const hero = document.querySelector('.hero');
 const heroVideo = document.querySelector('#hero-video');
-const videoToggle = document.querySelector('.hero-video-toggle');
-if (hero && heroVideo && videoToggle) {
+if (hero && heroVideo) {
 const mobileVideo = window.matchMedia('(max-width: 700px)');
 const connection = navigator.connection;
 // Keep the mobile backdrop behind all of the copy when text size or wrapping changes.
@@ -72,14 +71,6 @@ let wantsPlayback = false;
 let playbackReady = false;
 const autoPlaybackAllowed = () => !reduceMotion.matches && !connection?.saveData && !['slow-2g', '2g', '3g'].includes(connection?.effectiveType);
 let heroVisible = true;
-let userPaused = false;
-
-function updateVideoLabel() {
-  const label = wantsPlayback ? 'Pause background video' : 'Play background video';
-  videoToggle.setAttribute('aria-label', label);
-  videoToggle.title = label;
-  videoToggle.dataset.playing = String(wantsPlayback);
-}
 
 function ensureVideoSource() {
   const source = mobileVideo.matches ? heroVideo.dataset.mobileSrc : heroVideo.dataset.desktopSrc;
@@ -90,7 +81,6 @@ function ensureVideoSource() {
 }
 
 function syncVideoPlayback() {
-  updateVideoLabel();
   if (!playbackReady || !wantsPlayback || !heroVisible || document.hidden) {
     heroVideo.pause();
     return;
@@ -99,7 +89,6 @@ function syncVideoPlayback() {
   heroVideo.play().catch(error => {
     if (error.name !== 'AbortError' && heroVisible && !document.hidden) {
       wantsPlayback = false;
-      updateVideoLabel();
     }
   });
 }
@@ -107,27 +96,19 @@ function syncVideoPlayback() {
 if (heroVideo.canPlayType('video/mp4')) {
   heroVideo.muted = true;
   heroVideo.defaultMuted = true;
-  videoToggle.hidden = false;
-  videoToggle.addEventListener('click', () => {
-    playbackReady = true;
-    wantsPlayback = !wantsPlayback;
-    userPaused = !wantsPlayback;
-    syncVideoPlayback();
-  });
   heroVideo.addEventListener('playing', () => {
     heroVideo.closest('.hero-media').classList.add('is-ready');
   });
   heroVideo.addEventListener('error', () => {
     wantsPlayback = false;
     heroVideo.closest('.hero-media').classList.remove('is-ready');
-    videoToggle.hidden = true;
   });
   reduceMotion.addEventListener('change', () => {
-    wantsPlayback = playbackReady && !userPaused && autoPlaybackAllowed();
+    wantsPlayback = playbackReady && autoPlaybackAllowed();
     syncVideoPlayback();
   });
   mobileVideo.addEventListener('change', () => {
-    wantsPlayback = playbackReady && !userPaused && autoPlaybackAllowed();
+    wantsPlayback = playbackReady && autoPlaybackAllowed();
     syncVideoPlayback();
   });
   document.addEventListener('visibilitychange', syncVideoPlayback);
@@ -142,7 +123,7 @@ if (heroVideo.canPlayType('video/mp4')) {
     const start = () => {
       if (playbackReady) return;
       playbackReady = true;
-      wantsPlayback = !userPaused && autoPlaybackAllowed();
+      wantsPlayback = autoPlaybackAllowed();
       syncVideoPlayback();
     };
     if ('requestIdleCallback' in window) requestIdleCallback(start, {timeout: 2000});
