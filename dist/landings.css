@@ -261,3 +261,11 @@
   .landing-page .landing-hero .landing-form { padding: 24px 20px; }
   .landing-page .landing-products { padding-top: 32px; }
 }
+
+/* A short showroom invitation with one pair of actions beneath the illustration. */
+.landing-page .about-copy .landing-appointment-label { margin-top: 18px; }
+.landing-page .landing-showroom-booking { margin-top: 16px; padding: 0; border: 0; }
+.landing-page .about-copy .landing-booking-copy { margin-top: 0; }
+.landing-showroom-actions { display: grid; gap: 10px; width: min(280px, 100%); margin: 24px auto 0; }
+.landing-showroom-actions .btn { min-height: 48px; width: 100%; }
+.landing-page .footer-main { grid-template-columns: minmax(0, 1fr); }
