@@ -2,11 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readdirSync, readFileSync, statSync} from 'node:fs';
 import {join} from 'node:path';
+import {fileURLToPath} from 'node:url';
 
 // The CookieScript banner (John Crawford's CookieScript account) must load on every page,
 // once, at the top of <head> so it runs before any other script.
 const TAG = '<script type="text/javascript" charset="UTF-8" src="https://cdn.cookie-script.com/s/bb49fbb8483ced09e550fab9f04307c1.js"></script>';
-const dist = new URL('../dist/', import.meta.url).pathname;
+const dist = fileURLToPath(new URL('../dist/', import.meta.url));
 const pages = dir => readdirSync(dir).flatMap(name => {
   const path = join(dir, name);
   return statSync(path).isDirectory() ? pages(path) : name.endsWith('.html') ? [path] : [];

@@ -61,7 +61,9 @@ const videoToggle = document.querySelector('.hero-video-toggle');
 if (hero && heroVideo && videoToggle) {
 const mobileVideo = window.matchMedia('(max-width: 700px)');
 const connection = navigator.connection;
-let wantsPlayback = !reduceMotion.matches && !connection?.saveData;
+let wantsPlayback = false;
+let playbackReady = false;
+const autoPlaybackAllowed = () => !mobileVideo.matches && !reduceMotion.matches && !connection?.saveData && !['slow-2g', '2g', '3g'].includes(connection?.effectiveType);
 let heroVisible = true;
 let userPaused = false;
 
@@ -82,7 +84,7 @@ function ensureVideoSource() {
 
 function syncVideoPlayback() {
   updateVideoLabel();
-  if (!wantsPlayback || !heroVisible || document.hidden) {
+  if (!playbackReady || !wantsPlayback || !heroVisible || document.hidden) {
     heroVideo.pause();
     return;
   }
@@ -100,6 +102,7 @@ if (heroVideo.canPlayType('video/mp4')) {
   heroVideo.defaultMuted = true;
   videoToggle.hidden = false;
   videoToggle.addEventListener('click', () => {
+    playbackReady = true;
     wantsPlayback = !wantsPlayback;
     userPaused = !wantsPlayback;
     syncVideoPlayback();
@@ -113,10 +116,13 @@ if (heroVideo.canPlayType('video/mp4')) {
     videoToggle.hidden = true;
   });
   reduceMotion.addEventListener('change', () => {
-    wantsPlayback = !userPaused && !reduceMotion.matches && !connection?.saveData;
+    wantsPlayback = playbackReady && !userPaused && autoPlaybackAllowed();
     syncVideoPlayback();
   });
-  mobileVideo.addEventListener('change', syncVideoPlayback);
+  mobileVideo.addEventListener('change', () => {
+    wantsPlayback = playbackReady && !userPaused && autoPlaybackAllowed();
+    syncVideoPlayback();
+  });
   document.addEventListener('visibilitychange', syncVideoPlayback);
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(([entry]) => {
@@ -124,8 +130,36 @@ if (heroVideo.canPlayType('video/mp4')) {
       syncVideoPlayback();
     }, { threshold: 0 }).observe(hero);
   }
+  // Let the poster, fonts and consultation form render before requesting video.
+  const deferVideo = () => setTimeout(() => {
+    const start = () => {
+      if (playbackReady) return;
+      playbackReady = true;
+      wantsPlayback = !userPaused && autoPlaybackAllowed();
+      syncVideoPlayback();
+    };
+    if ('requestIdleCallback' in window) requestIdleCallback(start, {timeout: 2000});
+    else start();
+  }, 3500);
+  if (document.readyState === 'complete') deferVideo();
+  else window.addEventListener('load', deferVideo, {once: true});
   syncVideoPlayback();
 }
+}
+
+// Keep the mobile action bar away from the form and on-screen keyboard.
+const consultationForm = document.querySelector('#contact');
+const mobileContact = document.querySelector('.mobile-contact');
+if (consultationForm && mobileContact && 'IntersectionObserver' in window) {
+  let formVisible = false;
+  const syncContactBar = () => {
+    mobileContact.hidden = formVisible || (window.visualViewport?.height < window.innerHeight * .75);
+  };
+  new IntersectionObserver(([entry]) => {
+    formVisible = entry.isIntersecting;
+    syncContactBar();
+  }, {rootMargin: '0px 0px 80px 0px'}).observe(consultationForm);
+  window.visualViewport?.addEventListener('resize', syncContactBar);
 }
 
 const reviewsSection = document.querySelector('.reviews');
@@ -277,7 +311,7 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
   }
 
   fields.forEach(field => field.addEventListener('input', () => {
-    if (field.getAttribute('aria-invalid') === 'true' && !problem(field)) field.setAttribute('aria-invalid', 'false');
+    if (field.getAttribute('aria-invalid') === 'true' && !problem(field)) { field.setAttribute('aria-invalid', 'false'); field.removeAttribute('aria-describedby'); }
   }));
 
   form.addEventListener('submit', async event => {
@@ -286,9 +320,11 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
     const invalid = fields.filter(field => {
       const error = problem(field);
       field.setAttribute('aria-invalid', String(!!error));
+      field.removeAttribute('aria-describedby');
       return error;
     });
     if (invalid.length) {
+      invalid[0].setAttribute('aria-describedby', 'lead-status');
       show(problem(invalid[0]), true);
       invalid[0].focus();
       return;
@@ -321,7 +357,7 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
       if (!response.ok || result.success !== true) throw new Error(result.error || LEAD_CALL_US);
       form.reset();
       form.classList.add('is-sent');
-      show(result.warning || 'Thank you. We received your request and will contact you soon.', false);
+      show(result.warning || 'Thank you. We received your request. We’ll contact you to discuss your project and arrange a consultation. Your appointment is not yet confirmed.', false);
       // Meta Pixel lead, only for a lead GHL confirmed and only if the visitor allowed Targeting cookies
       // (otherwise CookieScript never loaded the pixel and fbq doesn't exist). No contact details are sent.
       try { if (typeof fbq === 'function') fbq('track', 'Lead'); } catch {}

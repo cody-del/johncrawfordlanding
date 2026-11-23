@@ -131,7 +131,7 @@ test('both landing forms are live and post to the quote form', () => {
     const html = readFileSync(new URL(`../dist/${page}`, import.meta.url), 'utf8');
     const form = html.match(/<form class="landing-form"[\s\S]*?<\/form>/)[0];
     assert.match(form, /data-lead-form="quote"/);
-    assert.match(form, /<button class="btn btn-primary" type="submit">Get Free Quote<\/button>/);
+    assert.match(form, /<button class="btn btn-primary" type="submit">Get a Free Consultation<\/button>/);
     assert.match(form, /name="website"/);
     assert.match(form, /class="lead-form-status"/);
     assert.doesNotMatch(form, /\bdisabled\b|Form preview/);
