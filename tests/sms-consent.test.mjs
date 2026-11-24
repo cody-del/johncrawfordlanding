@@ -127,3 +127,12 @@ test('an odd page value is not written into the consent record', async () => {
   const calls = await post(lead({page: 'javascript:alert(1)', smsTransactionalOptIn: true}));
   assert.match(calls[1].body.body, /from unknown page$/);
 });
+
+// Like the approved Shenandoah policies: accurate hosting and a postal address on both policy pages.
+test('policy pages name the business address and real hosting', () => {
+  for (const page of ['privacy/index.html', 'terms/index.html']) {
+    const body = text(read(page));
+    assert.match(body, /John Crawford Company, 22311 Ventura Blvd #101, Woodland Hills, CA 91364/);
+    assert.doesNotMatch(body, /ChatGPT Sites/);
+  }
+});

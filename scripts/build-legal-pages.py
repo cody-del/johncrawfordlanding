@@ -30,7 +30,7 @@ PAGES = [
   <h2>How your information is used</h2>
   <p>We use your information to respond to your request, discuss your project and arrange a showroom appointment or in-home consultation.</p>
   <h2>Service providers</h2>
-  <p>Quote requests are kept in HighLevel, the customer relationship system we use to manage inquiries. These pages are hosted through Netlify and ChatGPT Sites. Hosting providers may process technical information, such as IP addresses, browser details and request logs, to deliver and secure the pages. Our forms use Cloudflare Turnstile to confirm that a person, not an automated program, is sending them; Cloudflare receives browser and device information for that check.</p>
+  <p>Quote requests are kept in HighLevel, the customer relationship system we use to manage inquiries. These pages are hosted through Netlify. Hosting providers may process technical information, such as IP addresses, browser details and request logs, to deliver and secure the pages. Our forms use Cloudflare Turnstile to confirm that a person, not an automated program, is sending them; Cloudflare receives browser and device information for that check.</p>
   <h2>Tracking</h2>
   <p>If you allow Targeting cookies in our cookie notice, we use the Meta Pixel (Meta Platforms) to measure our ads and to show our ads on Facebook and Instagram to people who visited these pages. It records pages viewed and that a quote or appointment request was sent, never the details you type into a form. For visitors in California, we turn on Meta's Limited Data Use setting, which restricts how Meta may use this data. If you decline or later turn Targeting off in the cookie settings, the Meta Pixel does not run. Our landing pages also use the Google tag from Google Ads (Google LLC) to measure our Google ads. It records that a visit came from a Google ad and that a quote request was sent, never the details you type into a form. For visitors who arrive from a Google ad, the phone number on the page may be replaced with a Google forwarding number that rings us, so Google Ads can report calls from the ad; Google receives the call's time, duration and caller area code. Through Google Consent Mode, Google sets advertising cookies only if you allow Targeting cookies; otherwise it receives only limited, cookieless information about the visit. We do not use audience-tracking analytics. To protect our advertising from fraudulent clicks, our pages also use ClickCease, a click-fraud detection service from CHEQ. It receives technical information about each visit, such as IP address, browser and device details, to identify automated or invalid ad clicks. Because it is a security measure, it runs for every visitor. A cookie notice from CookieScript lets you review and change your cookie choices; it saves your choice in a cookie on your device. The pages do not change their behavior in response to browser Do Not Track signals.</p>
   <h2>Mobile Information and SMS</h2>
@@ -38,6 +38,7 @@ PAGES = [
   <p>SMS consent is optional and is not a condition of purchase. If you choose to opt in, message frequency varies and message and data rates may apply. Reply STOP to cancel and HELP for assistance. Transactional and promotional SMS choices are collected separately. See <a href="/sms-consent/">SMS Consent and Messaging Information</a>.</p>
   <h2>Your privacy requests</h2>
   <p>To ask about access, correction or deletion of information you provided to us, call {PHONE} or email {EMAIL}. We may need to verify your request and retain records required for an ongoing project or by law.</p>
+  <p>You can also write to John Crawford Company, {ADDRESS}.</p>
   <h2>Policy updates</h2>
   <p>We will post changes on this page and update the effective date when this policy changes.</p>''',
     },
@@ -67,7 +68,7 @@ PAGES = [
   <h2>Changes to these terms</h2>
   <p>We will post changes on this page and update the effective date when these terms change.</p>
   <h2>Contact us</h2>
-  <p>Call John Crawford Company at {PHONE} or email {EMAIL}.</p>''',
+  <p>John Crawford Company, {ADDRESS}. Call {PHONE} or email {EMAIL}.</p>''',
     },
     {
         'slug': '/accessibility/', 'name': 'Accessibility',
