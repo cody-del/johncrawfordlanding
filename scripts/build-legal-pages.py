@@ -1,4 +1,4 @@
-"""Build the Privacy Policy, Terms of Service and Accessibility pages for the landing domain.
+"""Build the Privacy Policy, Terms of Service, Accessibility and SMS consent pages for the landing domain.
 
 Run `python3 scripts/build-legal-pages.py` after changing the text below, then `npm run check`.
 The pages use the landing branding and stay out of search results. Their only script, dist/legal.js,
@@ -14,7 +14,8 @@ QUOTE = '/#contact'
 QUOTE_LINK = f'href="{QUOTE}" data-quote-link'
 PHONE = '<a href="tel:+18188845464">(818) 884-5464</a>'
 EMAIL = '<a href="mailto:john@johncrawford.com">john@johncrawford.com</a>'
-LINKS = [('/accessibility/', 'Accessibility'), ('/privacy/', 'Privacy Policy'), ('/terms/', 'Terms of Service')]
+ADDRESS = '22311 Ventura Blvd #101, Woodland Hills, CA 91364'
+LINKS = [('/accessibility/', 'Accessibility'), ('/privacy/', 'Privacy Policy'), ('/terms/', 'Terms of Service'), ('/sms-consent/', 'SMS Terms')]
 
 PAGES = [
     {
@@ -22,16 +23,19 @@ PAGES = [
         'description': 'How John Crawford Company handles quote requests and contact information sent through these pages.',
         'body': f'''
   <h1>Privacy Policy</h1>
-  <p class="legal-date">Effective November 11, 2026.</p>
+  <p class="legal-date">Effective November 25, 2026.</p>
   <p>This policy describes the information John Crawford Company collects through these pages and how to contact us about it.</p>
   <h2>Information you provide</h2>
-  <p>When you request a quote, we receive the name, phone number and email you enter and the appointment type you choose. If you call or email us, we receive the contact information and project details you share.</p>
+  <p>When you request a quote, we receive the name, phone number and email you enter the appointment type you choose, and whether you opt in to service texts, promotional texts, both or neither. If you call or email us, we receive the contact information and project details you share.</p>
   <h2>How your information is used</h2>
   <p>We use your information to respond to your request, discuss your project and arrange a showroom appointment or in-home consultation.</p>
   <h2>Service providers</h2>
   <p>Quote requests are kept in HighLevel, the customer relationship system we use to manage inquiries. These pages are hosted through Netlify and ChatGPT Sites. Hosting providers may process technical information, such as IP addresses, browser details and request logs, to deliver and secure the pages. Our forms use Cloudflare Turnstile to confirm that a person, not an automated program, is sending them; Cloudflare receives browser and device information for that check.</p>
   <h2>Tracking</h2>
   <p>If you allow Targeting cookies in our cookie notice, we use the Meta Pixel (Meta Platforms) to measure our ads and to show our ads on Facebook and Instagram to people who visited these pages. It records pages viewed and that a quote or appointment request was sent, never the details you type into a form. For visitors in California, we turn on Meta's Limited Data Use setting, which restricts how Meta may use this data. If you decline or later turn Targeting off in the cookie settings, the Meta Pixel does not run. Our landing pages also use the Google tag from Google Ads (Google LLC) to measure our Google ads. It records that a visit came from a Google ad and that a quote request was sent, never the details you type into a form. For visitors who arrive from a Google ad, the phone number on the page may be replaced with a Google forwarding number that rings us, so Google Ads can report calls from the ad; Google receives the call's time, duration and caller area code. Through Google Consent Mode, Google sets advertising cookies only if you allow Targeting cookies; otherwise it receives only limited, cookieless information about the visit. We do not use audience-tracking analytics. To protect our advertising from fraudulent clicks, our pages also use ClickCease, a click-fraud detection service from CHEQ. It receives technical information about each visit, such as IP address, browser and device details, to identify automated or invalid ad clicks. Because it is a security measure, it runs for every visitor. A cookie notice from CookieScript lets you review and change your cookie choices; it saves your choice in a cookie on your device. The pages do not change their behavior in response to browser Do Not Track signals.</p>
+  <h2>Mobile Information and SMS</h2>
+  <p>Mobile information will not be shared with third parties or affiliates for marketing or promotional purposes. Sharing with subcontractors and service providers that support customer service, scheduling, website operations, or message delivery is permitted only as needed to provide those services.</p>
+  <p>SMS consent is optional and is not a condition of purchase. If you choose to opt in, message frequency varies and message and data rates may apply. Reply STOP to cancel and HELP for assistance. Transactional and promotional SMS choices are collected separately. See <a href="/sms-consent/">SMS Consent and Messaging Information</a>.</p>
   <h2>Your privacy requests</h2>
   <p>To ask about access, correction or deletion of information you provided to us, call {PHONE} or email {EMAIL}. We may need to verify your request and retain records required for an ongoing project or by law.</p>
   <h2>Policy updates</h2>
@@ -42,7 +46,7 @@ PAGES = [
         'description': 'Terms for using these John Crawford Company pages and requesting a quote, showroom appointment or in-home consultation.',
         'body': f'''
   <h1>Terms of Service</h1>
-  <p class="legal-date">Effective November 5, 2026.</p>
+  <p class="legal-date">Effective November 25, 2026.</p>
   <p>These terms apply to your use of these John Crawford Company pages. By using them, you agree to these terms.</p>
   <h2>Using these pages</h2>
   <p>These pages give general information about our window treatments and services. Product images show manufacturer collections and are not presented as John Crawford Company installations. Please do not misuse the pages, send false information or submit automated requests through the quote form.</p>
@@ -50,6 +54,9 @@ PAGES = [
   <p>Requesting a quote or consultation does not place an order or create an obligation to buy. Product choices, measurements, pricing, installation timing and other project details are confirmed with you directly before anything is ordered. Product features, colors and availability are set by the manufacturers and may change.</p>
   <h2>Showroom visits</h2>
   <p>Showroom visits are by appointment only. Call {PHONE} or use the <a {QUOTE_LINK}>quote form</a> to arrange a time.</p>
+  <h2>SMS Terms</h2>
+  <p>By selecting an SMS opt-in checkbox, you consent only to the message category described beside that checkbox. Transactional messages may cover consultations, appointments, estimates, scheduling, project updates, repairs, and customer service. Promotional messages may cover offers, discounts, product announcements, and seasonal promotions. Message frequency varies; message and data rates may apply. Reply STOP to opt out and HELP for assistance. Consent is not a condition of purchase. Carriers are not liable for delayed or undelivered messages.</p>
+  <p>More detail is on our <a href="/sms-consent/">SMS Consent and Messaging Information</a> page.</p>
   <h2>Content and trademarks</h2>
   <p>Text, photos and logos on these pages belong to John Crawford Company or are used with permission. Product and brand names are trademarks of their respective owners.</p>
   <h2>Privacy</h2>
@@ -74,6 +81,31 @@ PAGES = [
   <p>Showroom visits are by appointment only.</p>
   <p class="legal-date">Statement reviewed November 5, 2026.</p>''',
     },
+    {
+        'slug': '/sms-consent/', 'name': 'SMS Consent and Messaging Information',
+        'description': 'How John Crawford Company collects optional SMS consent, the texts it sends, and how to opt out.',
+        'body': f'''
+  <h1>SMS Consent and Messaging Information</h1>
+  <p class="legal-date">Effective November 25, 2026.</p>
+  <p>John Crawford Company sends text messages only to people who choose to receive them. This page explains how that choice is made and what to expect.</p>
+  <h2>How Website Visitors Opt In</h2>
+  <p>Visitors opt in through the contact and quote forms on www.johncrawfordcompany.com and on these go.johncrawfordcompany.com pages. Each form has two independent, optional checkboxes, both unchecked by default:</p>
+  <ul>
+    <li><strong>Service texts:</strong> “I agree to receive service texts from John Crawford Company about consultations, appointments, estimates, installations, repairs, and customer support.”</li>
+    <li><strong>Promotional texts:</strong> “I agree to receive promotional texts from John Crawford Company about offers and product news.”</li>
+  </ul>
+  <p>Next to the checkboxes, the form states: Message frequency varies. Message and data rates may apply. Reply STOP to opt out or HELP for help. Consent is not a condition of purchase. The form also links to our <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms of Service</a>.</p>
+  <h2>Consent Is Specific and Voluntary</h2>
+  <p>You can submit a form without selecting either checkbox, and you can choose service texts, promotional texts, both or neither. Selecting one checkbox gives consent only to that category. Consent is not a condition of purchase. We record each choice with the date, time and page where it was made.</p>
+  <h2>Mobile Information and Sharing</h2>
+  <p>John Crawford Company does not sell, rent, lease, or share SMS opt-in data, phone numbers, or consent records with third parties or affiliates for their marketing or promotional purposes. Our customer-relationship platform processes records only on our behalf, and subcontractors and service providers that support customer service, scheduling, website operations, or message delivery receive information only as needed to provide those services. See our <a href="/privacy/">Privacy Policy</a>.</p>
+  <h2>Message Types</h2>
+  <p><strong>Service (transactional) texts</strong> may cover consultations, appointments, estimates, scheduling, project updates, installations, repairs, and customer support.</p>
+  <p><strong>Promotional texts</strong> may cover offers, discounts, product announcements, and seasonal promotions.</p>
+  <p>Message frequency varies. Message and data rates may apply. Reply STOP at any time to opt out, or HELP for help. Carriers are not liable for delayed or undelivered messages.</p>
+  <h2>Contact Us</h2>
+  <p>John Crawford Company, {ADDRESS}. Call {PHONE} or email {EMAIL}.</p>''',
+    },
 ]
 
 
@@ -97,7 +129,7 @@ def render(page):
   <link rel="stylesheet" href="/assets/fonts.css?v=fonts-2">
   <link rel="stylesheet" href="/styles.css?v=appointments-1">
   <link rel="stylesheet" href="/landings.css?v=appointment-options-1">
-  <link rel="stylesheet" href="/legal.css?v=legal-1">
+  <link rel="stylesheet" href="/legal.css?v=legal-2">
   <script src="/legal.js?v=legal-1" defer></script>
 </head>
 <body class="landing-page landing-legal">

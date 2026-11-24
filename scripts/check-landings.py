@@ -6,9 +6,9 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1] / 'dist'
 LANDINGS = {Path('index.html'), Path('motorized-shades/index.html')}
-LEGAL = {Path('privacy/index.html'), Path('terms/index.html'), Path('accessibility/index.html')}
+LEGAL = {Path('privacy/index.html'), Path('terms/index.html'), Path('accessibility/index.html'), Path('sms-consent/index.html')}
 PAGES = LANDINGS | LEGAL
-POLICY_LINKS = {'/accessibility/', '/privacy/', '/terms/'}
+POLICY_LINKS = {'/accessibility/', '/privacy/', '/terms/', '/sms-consent/'}
 LEGAL_LINKS = POLICY_LINKS | {'/', '/#contact', 'mailto:john@johncrawford.com'}
 
 
@@ -37,7 +37,7 @@ class Page(HTMLParser):
             self.refs.extend(item.strip().split()[0] for item in attrs['srcset'].split(','))
 
 
-assert {p.relative_to(ROOT) for p in ROOT.rglob('*.html')} == PAGES, 'Expected the two landing pages and three policy pages'
+assert {p.relative_to(ROOT) for p in ROOT.rglob('*.html')} == PAGES, 'Expected the two landing pages and four policy pages'
 pending = list(PAGES)
 checked = set()
 while pending:
@@ -55,7 +55,7 @@ while pending:
         page.feed(text)
         assert page.headings == 1, f'{relative}: expected one H1'
         assert 'name="robots" content="noindex, nofollow"' in text, f'{relative}: must stay out of search results'
-        assert POLICY_LINKS <= set(page.links), f'{relative}: footer must link Accessibility, Privacy Policy and Terms of Service'
+        assert POLICY_LINKS <= set(page.links), f'{relative}: footer must link Accessibility, Privacy Policy, Terms of Service and SMS Terms'
         allowed = POLICY_LINKS if relative in LANDINGS else LEGAL_LINKS
         if relative in LANDINGS:
             assert 'contact' in page.ids, f'{relative}: missing quote form'

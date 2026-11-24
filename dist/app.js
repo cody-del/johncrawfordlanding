@@ -276,7 +276,8 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
   const status = form.querySelector('.lead-form-status');
   const button = form.querySelector('button[type="submit"]');
   const buttonLabel = button.textContent;
-  const fields = [...form.querySelectorAll('input:not([type="radio"]):not([name="website"]), select, textarea')];
+  // Checkboxes (the optional SMS consent) are never validated, so their aria-describedby stays on the disclosure.
+  const fields = [...form.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]):not([name="website"]), select, textarea')];
   let pending = false;
   const human = humanCheck(form);
 
@@ -330,6 +331,11 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
       if (token === null) throw new Error('Please tick the box to confirm you’re a person, then send again.');
       const payload = Object.fromEntries(new FormData(form));
       payload.form = form.dataset.leadForm;
+      // Optional SMS consent, sent as two independent yes/no choices (both unchecked by default).
+      delete payload.sms_transactional;
+      delete payload.sms_marketing;
+      payload.smsTransactionalOptIn = form.querySelector('[name="sms_transactional"]')?.checked === true;
+      payload.smsMarketingOptIn = form.querySelector('[name="sms_marketing"]')?.checked === true;
       payload.page = location.pathname;
       // Time since the page started loading, on this browser's own clock.
       payload.elapsedMs = Math.round(performance.now());

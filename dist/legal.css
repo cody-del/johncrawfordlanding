@@ -1,4 +1,4 @@
-/* Privacy Policy, Terms of Service and Accessibility pages on the landing domain. */
+/* Privacy Policy, Terms of Service, Accessibility and SMS consent pages on the landing domain. */
 .legal-page { padding-block: 64px 88px; }
 .legal-readable { max-width: 760px; }
 .legal-readable h1 { font-size: clamp(40px, 4vw, 56px); }
@@ -13,3 +13,5 @@
 @media (max-width: 700px) {
   .legal-page { padding-block: 44px 72px; }
 }
+.legal-readable ul { margin-top: 16px; padding-left: 1.4em; list-style: disc; }
+.legal-readable li + li { margin-top: 8px; }

@@ -8,7 +8,8 @@ import {createLeadHandler, createRateLimiter} from '../netlify/lib/lead-http.mjs
 // (Netlify sets it for production builds) from switching the human check on here.
 delete process.env.TURNSTILE_SECRET_KEY;
 
-const expectedSubmission = "John Crawford form submission: Google Ads lead\nSource: Google Ads Landing Page: Motorized Shades\nName: Ada  Lovelace King\nPhone: +18185550142\nEmail: ada@example.com\nI’d like to schedule: Free in-home consultation";
+const expectedSubmission = "John Crawford form submission: Google Ads lead\nSource: Google Ads Landing Page: Motorized Shades\nName: Ada  Lovelace King\nPhone: +18185550142\nEmail: ada@example.com\nI’d like to schedule: Free in-home consultation\nService SMS opt-in: No\nPromotional SMS opt-in: No\nSMS consent captured 2026-11-25T08:00:00.000Z from /motorized-shades/";
+const now = () => new Date('2026-11-25T08:00:00.000Z');
 const env = {GHL_PRIVATE_TOKEN: 'pit-test', GHL_LOCATION_ID: 'loc-test'};
 const lead = (extra = {}) => ({
   form: 'quote', page: '/motorized-shades/', name: 'Ada  Lovelace King', phone: '(818) 555-0142',
@@ -29,7 +30,7 @@ function ghl({upsert = {status: 200, body: {contact: {id: 'c-1'}}}, note = {stat
 
 test('a landing lead is upserted with its campaign tag, its page source and the appointment tag', async () => {
   const {calls, fetcher} = ghl();
-  const result = await submitLead(lead(), {fetcher, env});
+  const result = await submitLead(lead(), {fetcher, env, now});
   assert.deepEqual(result, {status: 200, body: {success: true, contactId: 'c-1'}});
   assert.equal(calls[0].url, `${GHL_API}/contacts/upsert`);
   assert.equal(calls[0].init.headers.Authorization, 'Bearer pit-test');
