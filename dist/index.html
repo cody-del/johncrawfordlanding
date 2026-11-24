@@ -28,8 +28,8 @@
   <link rel="preload" href="/assets/hero-shades-poster-desktop-20261104-color2.webp" as="image" media="(min-width: 701px)">
   <link rel="preload" href="/assets/hero-shades-poster-mobile-20261104-color2.webp" as="image" media="(max-width: 700px)">
   <link rel="stylesheet" href="/styles.css?v=appointments-1">
-  <script src="/app.js?v=automatic-video-20261123" defer></script>
-<link rel="stylesheet" href="/landings.css?v=showroom-simple-20261123">
+  <script src="/app.js?v=sms-consent-20261125" defer></script>
+<link rel="stylesheet" href="/landings.css?v=sms-consent-20261125">
 </head>
 <body class="landing-page">
 <noscript><iframe src="https://ob.esnbranding.com/ns/812741747104d2a36e3927a603f46db5.html?ch=" width="0" height="0" style="display:none"></iframe></noscript>
@@ -52,6 +52,13 @@
       <div class="landing-form-field"><label for="lead-phone">Phone number</label><input id="lead-phone" name="phone" autocomplete="tel" type="tel" maxlength="30" required></div>
       <div class="landing-form-field"><label for="lead-email">Email</label><input id="lead-email" name="email" autocomplete="email" type="email" maxlength="254" required></div>
       </div>
+      <fieldset class="landing-sms-consent">
+        <legend>SMS updates (optional)</legend>
+        <label class="landing-sms-option"><input type="checkbox" name="sms_transactional" value="yes" aria-describedby="sms-disclosure"><span>I agree to receive service texts from <strong>John Crawford Company</strong> about consultations, appointments, estimates, installations, repairs, and customer support.</span></label>
+        <label class="landing-sms-option"><input type="checkbox" name="sms_marketing" value="yes" aria-describedby="sms-disclosure"><span>I agree to receive promotional texts from <strong>John Crawford Company</strong> about offers and product news.</span></label>
+        <p id="sms-disclosure" class="landing-sms-disclosure">For either option: Message frequency varies. Message and data rates may apply. Reply <strong>STOP</strong> to opt out or <strong>HELP</strong> for help. Consent is not a condition of purchase.</p>
+        <p class="landing-sms-links"><a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms</a> · <a href="/sms-consent/">SMS details</a></p>
+      </fieldset>
       <div class="lead-form-trap" aria-hidden="true"><label>Leave this field empty <input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
       <button class="btn btn-primary" type="submit">Get a Free Quote</button>
       <p id="lead-status" class="lead-form-status" role="status" tabindex="-1"></p>
@@ -121,6 +128,7 @@
         <a href="/accessibility/">Accessibility</a>
         <a href="/privacy/">Privacy Policy</a>
         <a href="/terms/">Terms of Service</a>
+        <a href="/sms-consent/">SMS Terms</a>
       </nav></div></footer>
 <div class="mobile-contact" aria-label="Quick contact">
     <a href="tel:+18188845464">Call Us</a>
