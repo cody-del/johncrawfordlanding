@@ -83,7 +83,7 @@ test('the Google Ads tag and call conversion load once on each landing page, aft
     const head = html.slice(html.indexOf('<head>'), html.indexOf('</head>'));
     assert.equal(html.split(ADS_LOADER).length - 1, 1, `${file}: Google tag loader must appear exactly once`);
     assert.ok(head.indexOf(ADS_LOADER) > head.indexOf(TAG) && head.indexOf(ADS_LOADER) > head.indexOf(CLICKCEASE), `${file}: Google tag must follow CookieScript and ClickCease`);
-    assert.equal(head.split(`gtag('config','${ADS_ID}');`).length - 1, 1, `${file}: Google tag config`);
+    assert.equal(head.split(`gtag('config','${ADS_ID}',{'allow_enhanced_conversions':true});`).length - 1, 1, `${file}: Google tag config (enhanced conversions allowed)`);
     assert.equal(head.split(ADS_CALL).length - 1, 1, `${file}: call conversion config`);
     assert.ok(html.includes('(818) 884-5464'), `${file}: the number Google swaps must be on the page`);
     withTag++;
