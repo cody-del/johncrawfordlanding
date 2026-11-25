@@ -1,3 +1,16 @@
+// GA4 (G-H1RC8T47T3) runs only on the live go. host after Performance consent (see the <head> snippet).
+// Every GA4 event names send_to so it never reaches the Google Ads tag on the same page.
+const GA4_ID = 'G-H1RC8T47T3';
+const GA4_HOST = 'go.johncrawfordcompany.com';
+// phone_click for every tap-to-call link, in the capture phase so a handler that stops the click can't hide it.
+document.addEventListener('click', event => {
+  const link = event.target.closest?.('a[href^="tel:"]');
+  if (!link || location.hostname !== GA4_HOST) return;
+  try {
+    if (typeof gtag === 'function') gtag('event', 'phone_click', { send_to: GA4_ID, link_url: link.getAttribute('href'), link_text: link.textContent.replace(/\s+/g, ' ').trim().slice(0, 100) });
+  } catch {}
+}, true);
+
 const menuToggle = document.querySelector('.menu-toggle');
 const navigation = document.querySelector('.main-navigation');
 const dropdowns = [...document.querySelectorAll('.nav-dropdown')];
@@ -362,6 +375,11 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
         if (typeof gtag === 'function') {
           gtag('event', 'conversion', { send_to: 'AW-853283675/sDwoCL-Q6uEcENum8JYD', ...(result.contactId ? { transaction_id: 'lead_' + result.contactId } : {}) });
         }
+      } catch {}
+      // GA4 lead event, only on the live go. host and only if the visitor allowed Performance cookies
+      // (CookieScript loads GA4 then). send_to keeps it out of Google Ads. No contact details are sent.
+      try {
+        if (location.hostname === GA4_HOST && typeof gtag === 'function') gtag('event', 'generate_lead', { send_to: GA4_ID, form_id: form.dataset.leadForm || 'quote' });
       } catch {}
     } catch (error) {
       show(error.name === 'TimeoutError' || error instanceof TypeError || error instanceof SyntaxError ? LEAD_CALL_US : error.message, true);
