@@ -280,6 +280,9 @@
 .landing-form .landing-sms-disclosure, .landing-form .landing-sms-links { clear: both; margin-top: 6px; font-size: 12px; line-height: 1.6; }
 .landing-sms-links a { display: inline-block; padding-block: 4px; }
 
+/* Trust line under the form heading. */
+.landing-form .landing-trust { margin-top: 6px; color: var(--walnut); font-size: 14px; font-weight: 600; line-height: 1.45; }
+
 /* Phones: fit the quote form, SMS consent and submit button into about one screen for ad visitors.
    Same fields, wording and order as larger screens (the SMS consent stays above the button). */
 @media (max-width: 600px) {
@@ -293,6 +296,7 @@
   .landing-page .hero-content > .landing-promise { margin-top: 6px; font-size: 13.5px; line-height: 1.4; }
   .landing-page .landing-form { padding: 16px 16px 20px; }
   .landing-page .landing-form h2 { font-size: 24px; }
+  .landing-form .landing-trust { margin-top: 2px; font-size: 12.5px; }
   .landing-form-fields { gap: 8px; margin-top: 10px; }
   .landing-form label { margin-bottom: 3px; font-size: 13px; }
   .landing-form .landing-form-field input { min-height: 44px; padding-block: 9px; }
