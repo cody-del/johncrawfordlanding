@@ -362,6 +362,8 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
       });
       const result = await response.json();
       if (!response.ok || result.success !== true) throw new Error(result.error || LEAD_CALL_US);
+      // Keep the email for Google Ads enhanced conversions before the form is cleared (see below).
+      const leadEmail = String(payload.email || '').trim().toLowerCase();
       form.reset();
       form.classList.add('is-sent');
       show(result.warning || 'Thank you. We received your request. We’ll contact you to discuss your project and arrange a consultation. Your appointment is not yet confirmed.', false);
@@ -370,9 +372,14 @@ document.querySelectorAll('form[data-lead-form]').forEach(form => {
       try { if (typeof fbq === 'function') fbq('track', 'Lead'); } catch {}
       // Google Ads lead conversion ("SS - Submit Lead Form"), also only for a lead GHL confirmed. The GHL
       // contact id is the transaction id, so a repeat send for the same contact counts once. Google Consent
-      // Mode (set by CookieScript) decides whether Google may use ad cookies for it. No contact details are sent.
+      // Mode (set by CookieScript) decides whether Google may use ad cookies and user data for it.
+      // Enhanced conversions, email only: the Google tag hashes the email before sending it to Google Ads
+      // ('allow_enhanced_conversions' is on in the AW config in <head>). Phone, name, message and SMS choices
+      // are never sent (the privacy policy promises mobile numbers aren't shared). GA4 ignores user_data
+      // because user-provided data collection is off in the GA4 property.
       try {
         if (typeof gtag === 'function') {
+          if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leadEmail)) gtag('set', 'user_data', { email: leadEmail });
           gtag('event', 'conversion', { send_to: 'AW-853283675/sDwoCL-Q6uEcENum8JYD', ...(result.contactId ? { transaction_id: 'lead_' + result.contactId } : {}) });
         }
       } catch {}
